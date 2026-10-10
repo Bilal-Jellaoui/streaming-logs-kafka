@@ -1,0 +1,22 @@
+# Java / Maven
+target/
+*.class
+*.jar
+*.war
+# IDE
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+# Logs (générés par le site, parfois énormes : ne jamais les versionner)
+logs/
+*.log
+!testdata/*.log
+# Secrets et système
+.env
+.DS_Store
+Thumbs.db
+# Kafka local
+kafka-data/
