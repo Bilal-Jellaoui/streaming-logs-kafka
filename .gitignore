@@ -11,7 +11,7 @@ target/
 .project
 .settings/
 # Logs (générés par le site, parfois énormes : ne jamais les versionner)
-logs/
+/logs/
 *.log
 !testdata/*.log
 # Secrets et système
