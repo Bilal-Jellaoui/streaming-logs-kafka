@@ -1,0 +1,8 @@
+127.0.0.1 - - [07/Oct/2026:14:32:05 +0000] "GET / HTTP/1.1" 200 5120
+127.0.0.1 - - [07/Oct/2026:14:32:05 +0000] "GET /produits HTTP/1.1" 200 2048
+127.0.0.1 - - [07/Oct/2026:14:32:06 +0000] "GET /produits/12?ref=accueil HTTP/1.1" 200 1500
+127.0.0.1 - - [07/Oct/2026:14:32:06 +0000] "GET /css/site.css HTTP/1.1" 200 800
+127.0.0.1 - - [07/Oct/2026:14:32:07 +0000] "GET /checkout HTTP/1.1" 200 640
+127.0.0.1 - - [07/Oct/2026:14:32:07 +0000] "GET /checkout HTTP/1.1" 503 90
+127.0.0.1 - - [07/Oct/2026:14:32:08 +0000] "GET /checkout HTTP/1.1" 503 90
+ligne invalide pour verifier qu'elle est ignoree
