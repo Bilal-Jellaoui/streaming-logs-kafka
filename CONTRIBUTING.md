@@ -20,7 +20,7 @@ Acceptez aussi l'invitation de collaborateur (e-mail GitHub). Sans elle, `git pu
 ## Première fois
 
 ```bash
-git clone https://github.com/<proprietaire>/<depot>.git
+git clone https://github.com/Bilal-Jellaoui/streaming-logs-kafka.git
 cd <depot>
 git checkout -b feature/<prenom-nom>   # ex : feature/ayoub-echihami
 ```
@@ -52,5 +52,5 @@ git push -u origin feature/<prenom-nom>
 git pull origin main
 # Git indique les fichiers en conflit : les ouvrir, garder le bon contenu, supprimer <<<<<<< ======= >>>>>>>
 git add <fichier>
-git commit
+git commit --no-edit
 ```
