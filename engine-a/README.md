@@ -23,3 +23,14 @@ Résultat avec `exemple-logs.txt` (fenêtre de 5 s) :
 - `/produits/12` est normalisé en `/produits/{id}`.
 - Les fichiers css/js sont regroupés en `/static`.
 - La ligne mal formée est ignorée.
+
+## Test sur cluster Kafka (3 brokers)
+
+Testé avec le `docker-compose.yml` du module infra (3 brokers, KRaft, `min.insync.replicas=2`).
+
+- Par défaut, Moteur A se connecte à `localhost:9098,localhost:9094,localhost:9096` avec `replication.factor=3` pour ses topics internes.
+- Pour un seul broker : `-Dkafka.bootstrap=localhost:9092 -Dkafka.replication=1`.
+
+**Résultat :** identique au test local (`/checkout` : 3 requêtes dont 2 erreurs 5xx, etc.).
+
+**Test de panne :** broker 2 arrêté (`docker stop soukline-kafka-2`), logs renvoyés : Moteur A continue et produit les mêmes résultats dans `stats-a`. Après redémarrage du broker, tous les ISR reviennent à 3.
