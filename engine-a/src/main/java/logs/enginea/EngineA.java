@@ -27,11 +27,12 @@ import java.util.Properties;
  * Idée : c'est l'exemple classique "word count", sauf que le "mot" est l'URL.
  *
  * Réglages possibles au lancement (sinon valeurs par défaut) :
- *   -Dkafka.bootstrap=localhost:9092   -Dstreams.threads=2   -Dwindow.seconds=5
+ *   -Dkafka.bootstrap=localhost:9098,localhost:9094,localhost:9096  -Dstreams.threads=2   -Dwindow.seconds=5
  */
 public class EngineA {
 
-    static final String BOOTSTRAP = System.getProperty("kafka.bootstrap", "localhost:9092");
+    static final String BOOTSTRAP = System.getProperty("kafka.bootstrap", "localhost:9098,localhost:9094,localhost:9096");
+    static final int REPLICATION = Integer.getInteger("kafka.replication", 3);   // 3 brokers (mettre 1 si un seul broker)
     static final int THREADS = Integer.getInteger("streams.threads", 2);       // <= nombre de partitions (8)
     static final int WINDOW_SECONDS = Integer.getInteger("window.seconds", 5);
     static final String APP_ID = System.getProperty("app.id", "logs-engine-a");
@@ -123,6 +124,7 @@ public class EngineA {
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
         props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 1000);   // sinon les résultats sortent toutes les 30 s
         props.put(StreamsConfig.NUM_STREAM_THREADS_CONFIG, THREADS);
+        props.put(StreamsConfig.REPLICATION_FACTOR_CONFIG, REPLICATION);
 
         KafkaStreams streams = new KafkaStreams(buildTopology(), props);
         streams.setStateListener((nouveau, ancien) ->
