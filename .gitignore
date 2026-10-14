@@ -20,3 +20,14 @@ logs/
 Thumbs.db
 # Kafka local
 kafka-data/
+target/
+# SoukLine - Resultats temporaires JMeter
+infra/jmeter/*.jtl
+infra/jmeter/results/
+
+# Sauvegardes JMeter
+infra/jmeter/*-backup.jmx
+infra/jmeter/*.jmx.bak
+
+# Logs JMeter
+infra/jmeter/*.log

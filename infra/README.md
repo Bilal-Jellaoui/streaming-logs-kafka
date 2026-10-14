@@ -2,550 +2,445 @@
 
 **Responsable :** Ali Nouar (Membre 2, intégrateur)
 
-- `docker-compose` Kafka, topics `web-logs` (8 partitions), `stats-a`, `stats-b`
-- Plan JMeter en 3 phases : normal, pic sur `/panier` et `/checkout`, panne
-- `config.properties` partagé, scripts de lancement, README « comment lancer »
+**Consignes de la répartition du travail — conservées :**
 
-# SoukLine — Infrastructure Kafka, Tests et JMeter
+- `docker-compose` Kafka, topics `web-logs` (8 partitions), `stats-a`, `stats-b`.
+- Plan JMeter en 3 phases : trafic normal, pic sur `/panier` et `/checkout`, panne.
+- `config.properties` partagé, scripts de lancement, README « comment lancer ».
+
+---
+
+# SoukLine — Infrastructure Kafka, tests et JMeter
 
 ## 1. Présentation du projet
 
-**SoukLine** est un projet de traitement parallèle et en temps réel des logs d'un site web.
+**SoukLine** est un projet de traitement parallèle en streaming des logs d'un site web. Les requêtes HTTP des visiteurs sont enregistrées dans `access.log`, puis doivent être publiées dans Apache Kafka et analysées par deux moteurs de traitement parallèles.
 
-L'objectif est de collecter les requêtes HTTP effectuées par les visiteurs, de transmettre ces informations à Apache Kafka, puis de les analyser à l'aide de deux moteurs de traitement parallèles.
+Ce dossier `infra/` contient :
 
-Le projet est réalisé en équipe dans le cadre de notre Master.
+- Un cluster Kafka local de **3 brokers**, en mode **KRaft**.
+- La configuration des topics et des clients Kafka.
+- Des scripts PowerShell de création, vérification, messagerie, réplication et tolérance aux pannes.
+- Des outils Java de charge Kafka (producteur et consommateur).
+- Un plan JMeter simulant trois phases de trafic HTTP sur le **site réel SoukLine**.
 
-Ce dossier `infra/` contient la première version du prototype d'infrastructure, comprenant :
+**État vérifié au 14 octobre 2026 :** le cluster Kafka, les tests Kafka et les trois scénarios JMeter ont été exécutés avec succès. Le site Spring Boot génère de vrais logs Tomcat, dont **5 000 réponses HTTP 503** observées pendant la simulation de panne. **La transmission de ces logs vers Kafka par le collecteur, puis leur traitement par les moteurs, n'ont pas encore été validés de bout en bout.**
 
-- Un cluster Apache Kafka composé de trois brokers.
-- La configuration commune des topics Kafka.
-- Des scripts PowerShell de création et de vérification de l'infrastructure.
-- Des tests de messagerie, de réplication et de tolérance aux pannes.
-- Des outils Java permettant de produire et de consommer un grand volume de messages Kafka.
-- Un scénario Apache JMeter destiné à simuler les visiteurs du site web.
-
-**État actuel :** l'infrastructure Kafka et ses tests sont opérationnels. L'intégration complète avec le site Spring Boot de Mohamed reste à effectuer.
-
----
-
-## 2. Architecture générale du projet
-
-Le fonctionnement prévu de SoukLine est le suivant :
+## 2. Architecture générale
 
 ```text
 Visiteurs / Apache JMeter
-            |
-            v
-    Site web Spring Boot
-            |
-            v
-     Tomcat access.log
-            |
-            v
-     Collecteur de logs
-            |
-            v
-     Kafka : web-logs
-            |
-      +-----+-----+
-      |           |
-      v           v
-   Engine A    Engine B
- Kafka Streams  Java Threads
-      |           |
-      v           v
-   stats-a      stats-b
-      |           |
-      +-----+-----+
-            |
-            v
-  Affichage et alertes
+          |
+          v
+Site web Spring Boot (localhost:8080)
+          |
+          v
+site/logs/access.log (Tomcat)
+          |
+          v
+Collecteur de logs (module d'équipe ; intégration à valider)
+          |
+          v
+Kafka : web-logs (8 partitions)
+          |
+      +---+---+
+      |       |
+      v       v
+  Engine A  Engine B
+      |       |
+      v       v
+   stats-a  stats-b
+      |       |
+      +---+---+
+          |
+          v
+Affichage et alertes
 ```
 
-### Explication
-
-1. **Apache JMeter** simule des visiteurs envoyant des requêtes HTTP au site.
-2. **Spring Boot / Tomcat** reçoit ces requêtes et les enregistre dans un fichier `access.log`.
-3. **Le collecteur** lit les nouveaux logs et les publie dans Kafka.
-4. **Kafka** distribue les messages au moyen du topic `web-logs`.
-5. **Engine A et Engine B** analysent les mêmes logs avec deux approches de parallélisme.
-6. Les résultats sont publiés dans les topics `stats-a` et `stats-b`.
-7. Un composant final récupère les statistiques pour les afficher et déclencher des alertes.
-
-Notre partie concerne principalement **Kafka, JMeter et l'intégration de l'infrastructure**.
-
----
+**Périmètre de ce dossier :** configuration et validation de Kafka, génération de trafic JMeter et préparation des tests d'intégration. Le collecteur, les moteurs et l'affichage sont développés par d'autres membres de l'équipe.
 
 ## 3. Organisation du dossier `infra/`
 
 ```text
 infra/
-|
 |-- README.md
 |-- docker-compose.yml
 |-- config.properties
-|
 |-- scripts/
 |   |-- create-topics.ps1
 |   |-- check-kafka.ps1
 |   |-- test-messaging.ps1
 |   |-- test-replication.ps1
-|   |-- test-failover.ps1
-|
+|   `-- test-failover.ps1
 |-- performance-tests/
 |   |-- pom.xml
-|   |-- src/main/java/soukline/
+|   `-- src/main/java/soukline/
 |       |-- KafkaConfig.java
 |       |-- KafkaLoadProducer.java
-|       |-- KafkaLoadConsumer.java
-|
-|-- jmeter/
+|       `-- KafkaLoadConsumer.java
+`-- jmeter/
     |-- SoukLine-Web-Load-Test.jmx
+    |-- phase1-normal.jmx
+    |-- phase2-pic.jmx
+    |-- phase3-panne.jmx
+    |-- run-jmeter.ps1
+    `-- results/  # Dossiers horodates avec phase1.jtl, phase2.jtl, phase3.jtl
 ```
-
-Chaque élément a un rôle précis, expliqué ci-dessous.
-
----
 
 ## 4. Infrastructure Kafka — `docker-compose.yml`
 
-Le fichier `docker-compose.yml` permet de démarrer notre infrastructure Kafka avec Docker Compose.
+### Configuration
 
-### Configuration réalisée
+- **3 brokers** : `soukline-kafka-1`, `soukline-kafka-2`, `soukline-kafka-3`.
+- **Apache Kafka 3.7.0**, mode **KRaft** (sans ZooKeeper pour SoukLine).
+- Ports exposés sur Windows : **9098, 9094, 9096**.
+- **3 topics**, chacun avec **8 partitions**, facteur de réplication **3** et `min.insync.replicas=2`.
+- Mémoire Java limitée à environ **512 Mo par broker** dans la configuration du prototype.
 
-- **3 brokers Kafka** : `soukline-kafka-1`, `soukline-kafka-2` et `soukline-kafka-3`.
-- **Apache Kafka 3.7.0**.
-- Fonctionnement en mode **KRaft**, sans ZooKeeper.
-- Ports accessibles depuis Windows : `9098`, `9094` et `9096`.
-- Communication interne entre les brokers au moyen des ports Kafka configurés dans Docker.
-- Limite de mémoire Java configurée à environ **512 Mo par broker**.
+Les trois brokers répartissent les partitions et permettent leur réplication. KRaft gère les métadonnées du cluster sans ZooKeeper. La réplication améliore la disponibilité, sans garantir à elle seule l'absence de perte dans toutes les situations.
 
-### Pourquoi trois brokers ?
+### Comment démarrer et arrêter Kafka
 
-Un broker Kafka est un serveur qui stocke et distribue les messages.
-
-L'utilisation de trois brokers permet de :
-
-- Répartir les partitions entre plusieurs serveurs.
-- Répliquer les données pour améliorer leur disponibilité.
-- Continuer à fonctionner lorsqu'un broker devient temporairement indisponible, dans les limites de la configuration de réplication.
-
-### Pourquoi KRaft ?
-
-KRaft permet à Kafka de gérer ses métadonnées sans dépendre d'un service ZooKeeper séparé.
-
-Cela simplifie l'architecture de notre prototype.
-
-### Commandes principales
-
-Depuis le dossier `infra/` :
+Depuis la racine du dépôt :
 
 ```powershell
-docker compose up -d
+docker compose -f .\infra\docker-compose.yml up -d
+docker compose -f .\infra\docker-compose.yml ps
 ```
 
-Cette commande démarre les conteneurs en arrière-plan.
-
-Pour consulter leur état :
+Pour arrêter les conteneurs SoukLine :
 
 ```powershell
-docker compose ps
+docker compose -f .\infra\docker-compose.yml down
 ```
 
-Pour arrêter les conteneurs :
+**Attention :** éviter `docker compose down -v` : cette option peut supprimer les volumes et les données Kafka. Ne pas arrêter les conteneurs d'autres projets Docker.
+
+### Vérifier les brokers et les topics
+
+Depuis la racine du dépôt :
 
 ```powershell
-docker compose down
+.\infra\scripts\check-kafka.ps1
 ```
 
-**Attention :** ne pas utiliser `docker compose down -v` sans raison, car cette commande peut supprimer les volumes de données Kafka.
+**Résultat constaté le 14/10/2026 :** 3 brokers disponibles ; quorum KRaft avec membres `[1,2,3]` ; topics `web-logs`, `stats-a` et `stats-b` présents ; 8 partitions par topic ; facteur de réplication 3 ; réplicas ISR présents sur toutes les partitions affichées.
 
----
+**Remarque réseau :** `localhost:9098,9094,9096` désigne les ports publiés sur **Windows**. Une commande exécutée **à l'intérieur** d'un conteneur ne doit pas supposer que ces mêmes ports `localhost` pointent vers les autres brokers. Préférer les scripts du projet pour les contrôles.
 
 ## 5. Configuration partagée — `config.properties`
 
-Ce fichier centralise les paramètres Kafka utilisés par les différents composants.
-
 ```properties
+# Configuration Kafka - Projet SoukLine
+
+# Adresses des trois brokers depuis Windows
 bootstrap.servers=localhost:9098,localhost:9094,localhost:9096
 
+# Topics du projet
 topic.logs=web-logs
 topic.stats.a=stats-a
 topic.stats.b=stats-b
 
+# Configuration du producer
 producer.acks=all
+
+# Configuration du consumer
 consumer.auto.offset.reset=earliest
 
+# Nombre de partitions et de replicas
 topic.partitions=8
 topic.replication.factor=3
 ```
 
-### Explication des propriétés
+### Explication
 
-**`bootstrap.servers`**
+- `bootstrap.servers` : points d'entrée Kafka pour les applications exécutées sur Windows.
+- `topic.logs` : topic prévu pour les logs HTTP du site.
+- `topic.stats.a` / `topic.stats.b` : topics prévus pour les résultats des moteurs A et B.
+- `producer.acks=all` : demande la confirmation des réplicas synchronisés requis avant de considérer un envoi comme confirmé.
+- `consumer.auto.offset.reset=earliest` : pour un groupe sans offset valide, commence aux premiers messages **encore disponibles** ; cela ne force pas une relecture à chaque démarrage.
+- `topic.partitions=8` : permet le partitionnement et le parallélisme.
+- `topic.replication.factor=3` : trois copies de chaque partition, réparties sur les brokers.
 
-Contient les adresses des trois brokers Kafka accessibles depuis la machine locale.
+**Important :** ce fichier contient des propriétés de projet. Chaque programme Java doit effectivement les charger et appliquer les paramètres correspondants ; Kafka ne les lit pas automatiquement depuis ce fichier.
 
-Un client Kafka peut utiliser ces adresses pour découvrir le cluster.
+## 6. Scripts PowerShell de validation Kafka
 
-**`topic.logs=web-logs`**
+Les commandes ci-dessous s'exécutent depuis la racine du dépôt, avec Docker démarré.
 
-Topic destiné à recevoir les logs HTTP du site.
+| Script | Objectif | Résultat déjà obtenu |
+|---|---|---|
+| `create-topics.ps1` | Créer `web-logs`, `stats-a`, `stats-b` (8 partitions, réplication 3) | Topics créés et vérifiés |
+| `check-kafka.ps1` | Vérifier brokers, quorum KRaft, topics et réplicas | Réussi le 14/10/2026 |
+| `test-messaging.ps1` | Tester l'envoi et la réception de **100 messages distincts** | Réussi lors des validations précédentes |
+| `test-replication.ps1` | Contrôler les réplicas des partitions | Réussi lors des validations précédentes |
+| `test-failover.ps1` | Arrêter temporairement le broker 2, tester **20 messages**, puis le redémarrer | Réussi lors des validations précédentes |
 
-**`topic.stats.a=stats-a`**
+### Commandes
 
-Topic prévu pour les statistiques calculées par Engine A.
-
-**`topic.stats.b=stats-b`**
-
-Topic prévu pour les statistiques calculées par Engine B.
-
-**`producer.acks=all`**
-
-Demande au producteur d'attendre l'acquittement des réplicas synchronisés requis avant de considérer un message comme confirmé.
-
-Cette configuration améliore la fiabilité de l'envoi.
-
-**`consumer.auto.offset.reset=earliest`**
-
-Permet à un consommateur qui ne possède pas encore de position enregistrée de commencer à lire depuis les premiers messages encore disponibles.
-
-**`topic.partitions=8`**
-
-Chaque topic est configuré avec huit partitions.
-
-Les partitions permettent de répartir les messages et de faciliter leur traitement parallèle.
-
-**`topic.replication.factor=3`**
-
-Chaque partition possède trois copies réparties entre les brokers.
-
-La réplication améliore la disponibilité des données.
-
----
-
-## 6. Scripts PowerShell de validation
-
-Le dossier `scripts/` contient les scripts permettant de préparer et de vérifier le cluster Kafka.
-
-### 6.1. `create-topics.ps1`
-
-**Objectif :** créer les topics nécessaires au projet.
-
-Topics concernés :
-
-- `web-logs`
-- `stats-a`
-- `stats-b`
-
-Chaque topic est configuré avec :
-
-- **8 partitions**
-- **Facteur de réplication : 3**
-
-Ce script permet de préparer l'infrastructure avant le démarrage des autres composants.
-
-### 6.2. `check-kafka.ps1`
-
-**Objectif :** vérifier que l'infrastructure Kafka est accessible et correctement configurée.
-
-Il sert à contrôler l'état général du cluster et à repérer les problèmes de configuration avant les tests.
-
-### 6.3. `test-messaging.ps1`
-
-**Objectif :** vérifier le fonctionnement de la communication Kafka.
-
-Le test utilise **100 messages distincts**.
-
-Il permet de vérifier que les messages peuvent être envoyés et récupérés par un consommateur.
-
-### 6.4. `test-replication.ps1`
-
-**Objectif :** vérifier la réplication des partitions Kafka.
-
-Avec trois topics de huit partitions chacun :
-
-```text
-3 topics × 8 partitions = 24 partitions
+```powershell
+.\infra\scripts\create-topics.ps1
+.\infra\scripts\check-kafka.ps1
+.\infra\scripts\test-messaging.ps1
+.\infra\scripts\test-replication.ps1
+.\infra\scripts\test-failover.ps1
 ```
 
-Avec trois réplicas par partition :
+**Détail de réplication :** 3 topics × 8 partitions = **24 partitions logiques** ; 24 × 3 = **72 répliques de partitions** attendues. Le script contrôle la présence des réplicas synchronisés.
 
-```text
-24 partitions × 3 réplicas = 72 réplicas attendus
-```
+**Prudence :** `test-failover.ps1` interrompt volontairement un broker. Ne pas le lancer pendant un autre test de charge ou une démonstration non prévue.
 
-Le script permet de contrôler que les partitions disposent des réplicas synchronisés attendus.
-
-### 6.5. `test-failover.ps1`
-
-**Objectif :** tester la tolérance aux pannes du cluster.
-
-Le scénario consiste à :
-
-1. Arrêter temporairement le broker Kafka numéro 2.
-2. Vérifier que le cluster continue à accepter les opérations prévues.
-3. Envoyer et recevoir **20 messages** pendant cette interruption.
-4. Redémarrer le broker arrêté.
-
-Ce test vérifie le comportement de l'infrastructure lorsqu'un broker devient indisponible.
-
-### Résultat de la première validation
-
-Les scripts de validation de l'infrastructure ont été exécutés avec succès pendant la préparation du prototype.
-
-Ils devront être relancés lors des tests d'intégration du projet complet.
-
----
+Ces scripts testent **Kafka**, pas la génération des logs HTTP par le site ni leur transfert par le collecteur.
 
 ## 7. Tests Java de charge Kafka
 
-Le dossier `performance-tests/` contient un petit projet Java indépendant destiné à tester la capacité de Kafka à recevoir et à restituer un grand nombre de messages.
+Le dossier `performance-tests/` contient un projet **Java 17 / Maven / Kafka Clients 3.7.0** :
 
-Il utilise :
+- `pom.xml` : dépendances et compilation.
+- `KafkaConfig.java` : configuration commune du producteur et du consommateur.
+- `KafkaLoadProducer.java` : envoi de messages identifiables dans `web-logs` et mesures d'envoi.
+- `KafkaLoadConsumer.java` : lecture et vérification du nombre de messages uniques, manquants, dupliqués ou invalides.
 
-- **Java 17**
-- **Apache Maven**
-- **Kafka Clients 3.7.0**
-
-### 7.1. `pom.xml`
-
-Ce fichier définit les dépendances Maven et la configuration de compilation du projet Java.
-
-Il permet notamment d'utiliser la bibliothèque officielle des clients Kafka.
-
-### 7.2. `KafkaConfig.java`
-
-Cette classe regroupe la configuration commune utilisée par les programmes Java de test.
-
-Son rôle est d'éviter de répéter les mêmes paramètres de connexion dans le producteur et le consommateur.
-
-### 7.3. `KafkaLoadProducer.java`
-
-Cette classe joue le rôle de **producteur Kafka**.
-
-Elle génère des messages identifiables et les envoie dans le topic `web-logs`.
-
-Format des messages de test :
+Les messages de test ont la forme :
 
 ```text
 SOUKLINE-LOAD|identifiant-du-test|numero-du-message
 ```
 
-Chaque message contient :
+### Résultats mesurés
 
-- Un préfixe indiquant qu'il s'agit d'un message de test.
-- Un identifiant permettant de distinguer plusieurs exécutions.
-- Un numéro de séquence permettant de vérifier les messages reçus.
+| Mesure | Test 1 000 messages | Test 100 000 messages |
+|---|---:|---:|
+| Production | Réussie | 100 000 confirmés |
+| Erreurs de production | Aucune observée | 0 |
+| Messages manquants | 0 | 0 |
+| Doublons | 0 | 0 |
+| Messages invalides | Aucun observé | 0 |
+| Durée de production | — | 2,618 s |
+| Débit de production | — | ~38 202 messages/s |
+| Latence moyenne observée | — | ~1 090 ms |
+| Latence P95 | — | ~1 452 ms |
+| Latence P99 | — | ~1 462 ms |
+| Durée de lecture | — | 2,097 s |
+| Débit de lecture | — | ~47 693 messages/s |
 
-Le producteur mesure notamment :
+Les exécutions de référence se sont terminées avec `BUILD SUCCESS`.
 
-- Le nombre de messages envoyés.
-- Le nombre de messages confirmés.
-- Les erreurs éventuelles.
-- La durée de l'envoi.
-- Le débit de production.
-- Certaines statistiques de latence.
-
-### 7.4. `KafkaLoadConsumer.java`
-
-Cette classe joue le rôle de **consommateur Kafka**.
-
-Elle récupère les messages correspondant à un identifiant de test et vérifie :
-
-- Le nombre de messages uniques reçus.
-- Les messages manquants.
-- Les doublons.
-- Les messages invalides.
-- La durée de lecture.
-
-Ce contrôle permet de vérifier la cohérence des messages reçus après un test de charge.
-
-### 7.5. Résultats obtenus
-
-Deux volumes ont été testés.
-
-**Test de 1 000 messages**
-
-- Production réussie.
-- Consommation réussie.
-- Aucun message manquant.
-- Aucun doublon.
-
-**Test de 100 000 messages**
-
-| Mesure | Résultat |
-|---|---|
-| Messages confirmés par le producteur | 100 000 |
-| Erreurs de production | 0 |
-| Durée de production | 2,618 secondes |
-| Débit de production observé | Environ 38 202 messages/s |
-| Latence moyenne observée | Environ 1 090 ms |
-| Latence P95 | Environ 1 452 ms |
-| Latence P99 | Environ 1 462 ms |
-| Messages uniques vérifiés par le consommateur | 100 000 |
-| Messages manquants | 0 |
-| Doublons | 0 |
-| Messages invalides | 0 |
-| Durée de lecture observée | 2,097 secondes |
-| Débit de lecture observé | Environ 47 693 messages/s |
-
-Les deux programmes ont terminé avec `BUILD SUCCESS`.
-
-**Interprétation :** ces résultats confirment le bon fonctionnement des outils de test sur notre environnement local. Ils constituent une première mesure indicative, et non un benchmark scientifique définitif du système complet.
-
-En particulier, la lecture peut porter sur des messages déjà présents dans Kafka : les débits de production et de consommation ne doivent donc pas être interprétés comme une mesure simultanée du pipeline de bout en bout.
-
----
+**Interprétation :** ces chiffres sont des mesures indicatives sur un environnement local, et **non** un benchmark définitif du pipeline complet. La lecture peut porter sur des messages déjà stockés ; les débits producteur et consommateur ne constituent donc pas une mesure simultanée de bout en bout. Les messages `SOUKLINE-LOAD` ne sont pas des logs HTTP réels.
 
 ## 8. Simulation des visiteurs avec Apache JMeter
 
-Le dossier `jmeter/` contient :
+### Outil et prérequis
 
-```text
-SoukLine-Web-Load-Test.jmx
+- **Apache JMeter 5.6.3**.
+- Site Spring Boot SoukLine démarré sur **`http://localhost:8080`**.
+- Plan : `infra/jmeter/SoukLine-Web-Load-Test.jmx`.
+- Les requêtes génèrent de véritables lignes dans `site/logs/access.log`.
+
+Pour démarrer le site depuis la racine du dépôt, dans **un terminal séparé** :
+
+```powershell
+cd .\site
+.\mvnw.cmd spring-boot:run
 ```
 
-Ce fichier représente notre premier scénario de test HTTP.
+Laisser le terminal du site ouvert pendant les tests.
 
-### Pourquoi utiliser JMeter ?
+### Phase 1 — Trafic normal
 
-Apache JMeter permet de simuler plusieurs utilisateurs qui visitent un site web.
+- **10 utilisateurs virtuels**, ramp-up **10 s**, **5 boucles**.
+- Parcours : `GET /`, `GET /produits`, `GET /produits/2`, `GET /recherche?q=tajine`, `POST /panier/ajouter`, `GET /panier`, `GET /checkout`.
+- Ajout au panier : formulaire `productId=2`, `quantity=1`.
+- **Résultat : 350 échantillons, 0 % d'erreurs** (7 requêtes × 10 utilisateurs × 5 boucles).
+- La page de paiement a été validée avec un panier et le service opérationnel.
 
-Dans SoukLine, il servira à générer du trafic HTTP pour que Tomcat produise des lignes dans le fichier `access.log`.
+### Phase 2 — Pic de trafic
 
-Ces logs seront ensuite collectés et envoyés dans Kafka.
+- **100 utilisateurs virtuels**, ramp-up **30 s**, **50 boucles**.
+- Un `Once Only Controller` ajoute un produit au panier **une fois par utilisateur**.
+- Les requêtes `GET /panier` et `GET /checkout` sont répétées.
 
-### Configuration initiale
+| Requête | Échantillons | Erreurs |
+|---|---:|---:|
+| `POST /panier/ajouter` | 100 | 0 % |
+| `GET /panier` | 5 000 | 0 % |
+| `GET /checkout` | 5 000 | 0 % |
+| **Total** | **10 100** | **0 %** |
 
-| Paramètre | Valeur |
-|---|---|
-| Outil | Apache JMeter 5.6.3 |
-| Utilisateurs virtuels | 10 |
-| Ramp-up | 10 secondes |
-| Nombre de boucles | 5 |
-| Méthode HTTP | GET |
-| Adresse provisoire | `http://localhost:8080/` |
+**Débit total observé : ~332,7 requêtes/s ; temps de réponse moyen global : ~6 ms.**
 
-### Structure du scénario
+### Phase 3 — Simulation de panne du paiement
 
-```text
-Test Plan
-|
-|-- SoukLine - Visiteurs Web
-    |
-    |-- SoukLine - GET Homepage
-    |
-    |-- SoukLine - HTTP Results
-    |
-    |-- SoukLine - Summary Report
+- **100 utilisateurs virtuels**, ramp-up **30 s**, **50 boucles**.
+- Un **setUp Thread Group** appelle `GET /admin/panne?etat=on` pour activer la panne.
+- Un `Once Only Controller` prépare le panier, puis `GET /panier` et `GET /checkout` sont répétés.
+- Un **tearDown Thread Group** appelle `GET /admin/panne?etat=off` pour rétablir le service après le test.
+
+| Requête | Échantillons | Erreurs |
+|---|---:|---:|
+| `POST /panier/ajouter` | 100 | 0 % |
+| `GET /panier` | 5 000 | 0 % |
+| `GET /checkout` | 5 000 | **100 % (HTTP 503 attendus)** |
+| **Total** | **10 100** | **49,50 % (panne simulée)** |
+
+**Débit total observé : ~330,9 requêtes/s ; temps de réponse moyen global : ~6 ms.**
+
+Le code **HTTP 503** a été constaté dans *View Results Tree*. La commande suivante a confirmé **exactement 5 000 lignes** de checkout en erreur dans le fichier Tomcat :
+
+```powershell
+(Select-String -Path .\site\logs\access.log -Pattern '"GET /checkout HTTP/1.1" 503 ').Count
 ```
 
-**Thread Group — SoukLine - Visiteurs Web**
+**Résultat observé : `5000`.** Le retour de la page de paiement après le test a également confirmé la désactivation de la panne. Ce comptage concerne le fichier de logs tel qu'il existait au moment de la vérification ; il ne mesure pas à lui seul le nombre de messages transmis à Kafka.
 
-Définit le nombre d'utilisateurs virtuels, la vitesse à laquelle ils démarrent et le nombre de répétitions.
+### Comment exécuter le plan dans l'interface JMeter
 
-**HTTP Request — SoukLine - GET Homepage**
+1. Démarrer le site Spring Boot.
+2. Ouvrir `infra/jmeter/SoukLine-Web-Load-Test.jmx` dans JMeter.
+3. Activer **uniquement** le Thread Group de la phase à tester ; désactiver les autres.
+4. Pour la **phase 3**, activer également les groupes **setUp** (panne `on`) et **tearDown** (panne `off`). Pour les phases 1 et 2, désactiver ces groupes pour éviter d'activer la panne par erreur.
+5. Lancer le test et consulter `Summary Report` / `View Results Tree`.
+6. Sauvegarder le plan après modification (`Ctrl+S`).
 
-Envoie une requête HTTP GET vers la page d'accueil du site.
+**Attention :** le plan original reste utilisable dans l'interface JMeter, phase par phase. Pour l'automatisation, utiliser les trois fichiers indépendants : cela empêche l'activation de la panne pendant les phases 1 et 2.
 
-**View Results Tree — SoukLine - HTTP Results**
+### Exécution JMeter automatisée en CLI — validée le 14/10/2026
 
-Permet de consulter les requêtes exécutées et les réponses reçues, notamment pour diagnostiquer les erreurs.
+**Prérequis :** JMeter 5.6.3 accessible avec `jmeter` dans le PATH, SoukLine démarré sur `http://localhost:8080`, et terminal ouvert à la racine du projet.
 
-**Summary Report — SoukLine - Summary Report**
+**Commande unique :**
 
-Affiche des statistiques globales sur les requêtes : nombre d'échantillons, temps de réponse, erreurs et débit.
+```powershell
+.\infra\jmeter\run-jmeter.ps1
+```
 
-### État actuel de JMeter
+Le script vérifie que JMeter et le site sont accessibles, crée un dossier de résultats horodaté sous `infra/jmeter/results/`, puis lance successivement :
 
-Le scénario est créé et sauvegardé.
+1. `phase1-normal.jmx` — trafic normal, 10 utilisateurs, 10 s de ramp-up, 5 boucles.
+2. `phase2-pic.jmx` — pic de trafic, 100 utilisateurs, 30 s de ramp-up, 50 boucles.
+3. `phase3-panne.jmx` — panne de paiement, 100 utilisateurs, 30 s de ramp-up, 50 boucles ; groupes `setUp` et `tearDown` actifs pour activer puis désactiver la panne.
 
-Cependant, **le test HTTP réel du site SoukLine n'a pas encore été validé**, car nous attendons les routes définitives et la disponibilité du site Spring Boot développé par Mohamed.
+Les résultats sont enregistrés dans `phase1.jtl`, `phase2.jtl` et `phase3.jtl` dans un dossier propre à chaque lancement. Le script tente aussi de désactiver la panne dans un bloc `finally`, même si une phase échoue. Après une interruption brutale, vérifier manuellement que le paiement est rétabli.
 
-L'adresse `localhost:8080` reste donc provisoire.
+**Exécution individuelle possible :**
 
----
+```powershell
+jmeter -n -t .\infra\jmeter\phase1-normal.jmx -l .\infra\jmeter\phase1-results.jtl
+jmeter -n -t .\infra\jmeter\phase2-pic.jmx -l .\infra\jmeter\phase2-results.jtl
+jmeter -n -t .\infra\jmeter\phase3-panne.jmx -l .\infra\jmeter\phase3-results.jtl
+```
+
+Pour relancer ces commandes, choisir de nouveaux noms `.jtl` afin d'éviter les collisions avec les résultats existants.
+
+**Résultats mesurés lors du lancement automatique du 14 octobre 2026 :**
+
+| Phase | Échantillons | Erreurs | Débit | Temps moyen |
+|---|---:|---:|---:|---:|
+| 1 — Normal | 350 | 0 (0 %) | 38,0 req/s | 5 ms |
+| 2 — Pic | 10 100 | 0 (0 %) | 335,7 req/s | 4 ms |
+| 3 — Panne | 10 102 | 5 000 (49,50 %) | 333,5 req/s | 4 ms |
+| **Total** | **20 552** | **5 000 erreurs attendues** | — | — |
+
+Les 10 102 échantillons de phase 3 incluent les deux requêtes administratives d'activation/désactivation. Les 5 000 erreurs correspondent à la panne HTTP 503 volontaire sur `/checkout`. La console a affiché `Les trois phases sont terminees !` et `Mode panne desactive.`. Une vérification séparée après un test individuel a confirmé `GET /checkout` avec HTTP 200.
+
+**Exemple de dossier généré :** `infra/jmeter/results/20261014-134142/`. Les `.jtl` et les copies de sauvegarde `.jmx` sont des artefacts locaux : ne pas les ajouter automatiquement à Git. Éviter les écouteurs graphiques gourmands en mémoire pour des charges plus importantes.
 
 ## 9. Tests réalisés et limites actuelles
 
-### Éléments validés
+### Validé
 
-- Démarrage du cluster Kafka local à trois brokers.
-- Création et vérification des topics.
-- Vérification de l'envoi et de la réception de messages.
-- Vérification de la réplication.
-- Test de tolérance à l'arrêt temporaire d'un broker.
-- Tests Java de 1 000 et 100 000 messages.
-- Vérification de l'absence de pertes et de doublons lors de ces tests.
-- Création et sauvegarde du plan JMeter.
-- Publication du prototype sur la branche GitHub dédiée.
+- Cluster Kafka à 3 brokers, quorum KRaft, 3 topics de 8 partitions, réplication 3.
+- Envoi/réception Kafka, réplication et failover dans les scripts de validation.
+- Tests Java de 1 000 et 100 000 messages ; aucune perte ni aucun doublon observés dans les exécutions de référence.
+- Site Spring Boot accessible sur `localhost:8080` ; routes HTTP réellement testées.
+- Création de vraies lignes Tomcat dans `site/logs/access.log`.
+- JMeter : **3 phases exécutées individuellement en CLI puis enchaînées automatiquement avec `run-jmeter.ps1`** ; 20 552 échantillons dans le test complet.
+- Simulation de panne : **5 000 HTTP 503** sur `/checkout`, confirmés dans `access.log` ; retour du paiement après désactivation.
 
-### Éléments restant à valider
+### Non encore validé / à compléter
 
-- Accessibilité du site web Spring Boot.
-- Routes HTTP définitives.
-- Génération du véritable fichier Tomcat `access.log`.
-- Lecture des logs par le collecteur Java.
-- Publication des vrais logs HTTP dans `web-logs`.
-- Traitement par les moteurs A et B.
-- Réception des statistiques dans `stats-a` et `stats-b`.
-- Affichage final et alertes.
-- Test de charge et mesure de performance du pipeline complet.
+- Lecture de `access.log` par le collecteur Java de l'équipe.
+- Publication des **vrais logs HTTP** dans Kafka `web-logs`.
+- Traitement de ces logs par les moteurs A et B.
+- Production effective des statistiques dans `stats-a` et `stats-b`.
+- Affichage, alertes et benchmark **de bout en bout**.
 
-Il est important de distinguer **les tests d'infrastructure déjà réussis** des **tests d'intégration de bout en bout qui restent à réaliser**.
-
----
+**Ne pas confondre** la présence d'un topic Kafka avec la preuve qu'il contient les vrais logs du site. Ne pas confondre non plus les messages synthétiques du test Java avec les logs HTTP produits par Tomcat.
 
 ## 10. Prochaines étapes d'intégration
 
-Lorsque le site Spring Boot sera disponible :
+1. Partager avec l'équipe les trois fichiers JMX, `run-jmeter.ps1` et les résultats de référence.
+2. Récupérer et démarrer le collecteur Java lorsqu'il sera disponible.
+3. Vérifier la publication des vrais logs de `site/logs/access.log` dans le topic `web-logs`.
+4. Vérifier le traitement par les moteurs A et B et les sorties `stats-a` et `stats-b`.
+5. Vérifier l'affichage, les alertes et les mesures de bout en bout.
 
-1. Récupérer la dernière version du site de Mohamed.
-2. Confirmer son port et ses routes HTTP.
-3. Adapter le fichier JMeter aux véritables pages et endpoints.
-4. Démarrer le site et vérifier la génération de `access.log`.
-5. Vérifier que le collecteur transmet les logs vers Kafka.
-6. Vérifier que les moteurs A et B consomment les logs.
-7. Contrôler les statistiques produites.
-8. Exécuter un scénario JMeter représentatif.
-9. Vérifier la stabilité du système complet et documenter les résultats.
-
----
+Les étapes 2 à 5 dépendent de l'intégration des modules des autres membres.
 
 ## 11. Gestion Git et collaboration
 
-Le développement de cette partie est effectué sur la branche :
+Le développement de cette partie est réalisé sur la branche :
 
 ```text
 feature/ali-nouar
 ```
 
-Le premier commit du prototype est :
-
-```text
-bad6251
-```
-
-Message du commit :
+Premier commit du prototype documenté : `bad6251`.
 
 ```text
 feat(infra): initial SoukLine prototype with Kafka cluster, tests and JMeter setup pending website integration
 ```
 
-Le code a été envoyé sur GitHub sans modifier directement la branche principale `main`.
+Le prototype initial a été publié sur la branche dédiée sans modifier directement `main`. Les nouvelles modifications devront être vérifiées puis proposées à l'équipe par Pull Request.
 
-Les futures modifications pourront être proposées à l'équipe par une Pull Request.
+Pour enregistrer uniquement les fichiers de sa partie, depuis la racine du dépôt :
 
----
+```powershell
+git status
+git add infra/README.md infra/jmeter/SoukLine-Web-Load-Test.jmx infra/jmeter/phase1-normal.jmx infra/jmeter/phase2-pic.jmx infra/jmeter/phase3-panne.jmx infra/jmeter/run-jmeter.ps1
+git commit -m "feat(infra): automate three JMeter traffic phases"
+```
+
+**Ne pas lancer `git add .` sans examiner les modifications des autres membres.** La commande `git commit` ci-dessus est une proposition à exécuter seulement après vérification des fichiers et des résultats.
 
 ## 12. Conclusion
 
-Cette première version de SoukLine fournit une infrastructure Kafka locale fonctionnelle et plusieurs outils permettant d'en vérifier la communication, la réplication et la résistance à une panne de broker.
+L'infrastructure Kafka locale de SoukLine est opérationnelle et a été soumise à des tests de messagerie, de réplication, de tolérance aux pannes et de charge. Le site web a également été testé avec JMeter en trafic normal, en pic et en panne de paiement. Les **5 000 réponses HTTP 503** ont été vérifiées dans les vrais logs Tomcat.
 
-Les tests Java ont permis de confirmer l'envoi et la réception de 100 000 messages sans perte ni doublon observés.
+**L’automatisation CLI JMeter est validée. La prochaine étape est la validation du transfert des vrais logs vers Kafka et du traitement complet par les composants de l’équipe.**
 
-Un premier scénario Apache JMeter a également été préparé pour simuler le trafic des visiteurs.
+---
 
-**La prochaine phase consistera à connecter cette infrastructure au site Spring Boot de Mohamed, puis à valider le traitement complet des logs web en streaming.**
+## 13. Historique détaillé des changements du README — 14/10/2026
+
+Cette section documente les modifications apportées par rapport au README initial, pour faciliter la revue par l'équipe.
+
+| Section | Changement | Raison / preuve |
+|---|---|---|
+| En-tête | **Consignes et responsable conservés** | Préserver explicitement le périmètre attribué au membre 2. |
+| 1. Présentation | Statut actualisé : site et JMeter testés ; pipeline complet non validé | Le README initial disait que l'intégration au site restait entièrement à faire. |
+| 2. Architecture | Ajout du chemin réel `site/logs/access.log` et du port `8080` ; séparation entre modules validés et prévus | Distinguer le fonctionnement observé de l'architecture cible. |
+| 3. Organisation | Arborescence conservée et clarifiée | Faciliter la navigation sans changer la structure du dépôt. |
+| 4. Kafka | Ajout du résultat de `check-kafka.ps1` du 14/10 et de `min.insync.replicas=2` ; rappel sur les ports Docker | Vérification réussie des trois brokers et des réplicas ; éviter l'erreur de commande dans un conteneur. |
+| 5. Configuration | Contenu `config.properties` conservé, commentaires explicités | Configuration confirmée ; rappel que les programmes doivent charger les propriétés. |
+| 6. Scripts | Commandes de lancement rassemblées et portée des tests précisée | Les scripts testent Kafka, pas le site. |
+| 7. Performance | Résultats 1 000 / 100 000 messages conservés ; limites d'interprétation précisées | Éviter de présenter les débits locaux comme des mesures du pipeline complet. |
+| 8. JMeter | **Remplacement du scénario provisoire par les trois phases réellement exécutées** | Résultats JMeter : phase 1 = 350 requêtes ; phases 2 et 3 = 10 100 chacune. |
+| 8. Panne | Ajout de la procédure `etat=on/off`, des 5 000 HTTP 503 et de la commande de vérification | Vérification directe dans `access.log`, puis retour de la page de paiement. |
+| 8. Lancement | Instructions GUI mises à jour ; syntaxe CLI ajoutée **sans prétendre qu'elle est validée** | Éviter que setUp/tearDown active la panne pendant les phases normales. |
+| 9. État du projet | Déplacement du site et de `access.log` vers « Validé » ; collecteur/moteurs laissés « À valider » | Alignement sur les preuves disponibles. |
+| 10. Étapes suivantes | Suppression des étapes désormais réalisées ; priorité à CLI puis intégration | Ne pas demander de refaire les tests déjà passés. |
+| 11. Git | Consignes de collaboration conservées et exemple de commit ciblé ajouté | Préserver le travail des autres membres. |
+| 12. Conclusion | Résumé actualisé des réalisations et limites | Présenter un bilan fidèle à l'état actuel. |
+
+**Aucun fichier de configuration, script PowerShell, programme Java ou plan JMeter n'a été modifié par cette mise à jour du README.**
+
+
+### Complément du 14/10/2026 — automatisation CLI achevée
+
+- Documentation des trois plans JMeter indépendants et du script `run-jmeter.ps1`.
+- Ajout de la commande de lancement unique, de la structure des rapports et des mesures observées (20 552 échantillons, dont 5 000 erreurs 503 attendues).
+- Mise à jour des sections « validé », « prochaines étapes », « conclusion » et de la commande Git.
+- Le collecteur, les moteurs et l'affichage Kafka restent à intégrer et valider.
+
+**Ce document met à jour uniquement le README ; il ne modifie pas les fichiers de code locaux.**
