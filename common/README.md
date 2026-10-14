@@ -1,4 +1,4 @@
-# # Parser partagé (LogEntry + LogParser)
+#  Parser partagé (LogEntry + LogParser)
 
 **Responsable :** Bilal Jellaoui (Membre 3)
 
