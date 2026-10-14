@@ -5,10 +5,13 @@
 Topologie : `web-logs` → parsing → `selectKey(url)` → `groupByKey` → fenêtres de 5 s → `aggregate` (requêtes + erreurs 5xx) → JSON dans `stats-a`.
 
 Format JSON commun avec le Moteur B : `{engine, windowStart, url, requests, errors5xx}`.
+
+
+
 ## Test d'intégration (Kafka local)
 
 Testé sur un Kafka local (Docker, `apache/kafka:3.7.0`).
-Le `docker-compose.yml` officiel est fourni par le module infra.
+Le cluster Kafka (3 brokers) est dans le dossier infra/ (docker-compose.yml)
 
 Résultat avec `exemple-logs.txt` (fenêtre de 5 s) :
 
