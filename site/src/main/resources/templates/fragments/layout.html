@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${title} + ' | SoukLine Artisanal'">SoukLine - E-Commerce Artisanal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/soukline.css}">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛍️</text></svg>">
+    <link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon">
 </head>
 <body>
 
@@ -24,8 +27,8 @@
                 </span>
             </div>
             <div class="announcement-right">
-                <a th:href="@{/admin}" class="btn-admin btn-sm" style="color: #FDE68A; text-decoration: underline;">
-                    ⚙️ Panneau Mode Panne (/admin)
+                <a th:href="@{/admin}" class="btn-admin">
+                    ⚙️ Panneau Admin Mode Panne (/admin)
                 </a>
             </div>
         </div>
@@ -33,14 +36,14 @@
         <!-- Main Navigation Bar -->
         <div class="navbar-container">
             <a th:href="@{/}" class="logo-wrapper">
-                <div class="logo-icon">✨</div>
+                <div class="logo-icon">🛍️</div>
                 <div class="logo-text">Souk<span>Line</span></div>
             </a>
 
             <!-- Search Form -->
             <div class="search-bar">
                 <form th:action="@{/recherche}" method="get" class="search-form">
-                    <input type="text" name="q" placeholder="Rechercher tapis, épices, tajine..." th:value="${query}" required>
+                    <input type="text" name="q" placeholder="Rechercher (tapis, argan, tajine...)" th:value="${query}" required>
                     <button type="submit" class="search-btn" title="Rechercher">🔍</button>
                 </form>
             </div>
@@ -55,8 +58,8 @@
             <!-- Actions (Login, Cart) -->
             <div class="nav-actions">
                 <div th:if="${currentUser != null}">
-                    <span style="font-size: 0.9rem; font-weight: 600; color: var(--color-indigo);" th:text="'Bonjour, ' + ${currentUser.name}"></span>
-                    <a th:href="@{/logout}" style="font-size: 0.8rem; color: var(--danger); margin-left: 8px;">(Déconnexion)</a>
+                    <span style="font-size: 0.88rem; font-weight: 600; color: var(--text-main);" th:text="'Bonjour, ' + ${currentUser.name}"></span>
+                    <a th:href="@{/logout}" style="font-size: 0.8rem; color: var(--ios-red); margin-left: 6px;">(Déconnexion)</a>
                 </div>
                 <div th:unless="${currentUser != null}">
                     <a th:href="@{/login}" class="btn btn-secondary btn-sm">Se connecter</a>
@@ -75,11 +78,11 @@
         <div class="footer-container">
             <div>
                 <div class="footer-brand">Souk<span>Line</span></div>
-                <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 16px;">
+                <p style="font-size: 0.88rem; line-height: 1.6; margin-bottom: 16px;">
                     Plateforme e-commerce artisanale marocaine conçue pour l'architecture streaming temps réel & logs haute fréquence.
                 </p>
                 <p style="font-size: 0.8rem; color: #64748B;">
-                    Projet Traitement Parallèle en Streaming • Groupe 1 • Membre 1
+                    Projet Traitement Parallèle en Streaming • Groupe 1 • Membre 1 (Site Web & Tomcat)
                 </p>
             </div>
 
@@ -105,16 +108,16 @@
 
             <div>
                 <div class="footer-title">Architecture Logs</div>
-                <p style="font-size: 0.85rem; line-height: 1.6; margin-bottom: 10px;">
+                <p style="font-size: 0.84rem; line-height: 1.6; margin-bottom: 10px;">
                     <strong>Fichier logs :</strong> <code>logs/access.log</code><br>
-                    <strong>Format :</strong> Apache / Tomcat Common<br>
-                    <strong>Exceptions :</strong> <code>logs/error.log</code>
+                    <strong>Format :</strong> Tomcat Common (CLF)<br>
+                    <strong>Journal Erreurs :</strong> <code>logs/error.log</code>
                 </p>
             </div>
         </div>
 
         <div class="footer-bottom">
-            <span>© 2026 SoukLine Inc. — Tous droits réservés.</span>
+            <span>© 2026 SoukLine Inc. — Tous droits réservés. Thème Moderne iOS.</span>
             <span>Serveur Tomcat Embarqué Spring Boot (Port 8080)</span>
         </div>
 

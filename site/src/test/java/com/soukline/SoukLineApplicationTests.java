@@ -69,4 +69,32 @@ class SoukLineApplicationTests {
 
         assertThat(panneService.isPanneActive()).isFalse();
     }
+
+    @Test
+    void testInexistentUrlReturns404Not500() throws Exception {
+        mockMvc.perform(get("/nimporte-quoi"))
+                .andExpect(status().isNotFound())
+                .andExpect(view().name("error/404"));
+    }
+
+    @Test
+    void testInexistentUrlWithJsonAcceptReturns404Json() throws Exception {
+        mockMvc.perform(get("/nimporte-quoi").header("Accept", "application/json"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.error").value("Not Found"));
+    }
+
+    @Test
+    void testFaviconReturns200() throws Exception {
+        mockMvc.perform(get("/favicon.ico"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void testInexistentProductReturns404Not500() throws Exception {
+        mockMvc.perform(get("/produits/99999"))
+                .andExpect(status().isNotFound())
+                .andExpect(view().name("error/404"));
+    }
 }

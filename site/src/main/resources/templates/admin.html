@@ -7,29 +7,29 @@
     <div th:replace="~{fragments/layout :: site-header}"></div>
 
     <main class="main-content">
-        <div class="container" style="max-width: 1000px;">
+        <div class="container" style="max-width: 980px;">
 
-            <div style="margin-bottom: 32px;">
+            <div style="margin-bottom: 28px;">
                 <h1 class="section-title">Panneau de Contrôle & Mode Panne</h1>
-                <p class="section-subtitle">Gestion du comportement du serveur Tomcat pour la démonstration de streaming et alertes</p>
+                <p class="section-subtitle">Gestion du comportement du serveur Tomcat pour la démonstration du traitement en streaming et alertes</p>
             </div>
 
             <!-- Main Panne Control Card -->
             <div class="admin-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
                     <div>
-                        <h2 style="font-family: var(--font-serif); font-size: 1.5rem; color: var(--color-indigo);">
+                        <h2 style="font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; color: var(--text-main);">
                             État de la Passerelle de Paiement (/checkout)
                         </h2>
-                        <p style="color: var(--text-muted); font-size: 0.9rem;">
-                            Contrôlable via l'URL requise : <code>/admin/panne?etat=on|off</code>
+                        <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 2px;">
+                            Endpoint normalisé pour JMeter & scripts : <code>/admin/panne?etat=on|off</code>
                         </p>
                     </div>
 
-                    <span th:if="${panneActive}" class="panne-status-badge panne" style="font-size: 0.95rem; padding: 6px 16px;">
+                    <span th:if="${panneActive}" class="panne-status-badge panne" style="font-size: 0.88rem; padding: 6px 16px;">
                         🔴 MODE PANNE ACTIF (503)
                     </span>
-                    <span th:unless="${panneActive}" class="panne-status-badge normal" style="font-size: 0.95rem; padding: 6px 16px;">
+                    <span th:unless="${panneActive}" class="panne-status-badge normal" style="font-size: 0.88rem; padding: 6px 16px;">
                         🟢 FONCTIONNEMENT NORMAL (200)
                     </span>
                 </div>
@@ -37,11 +37,11 @@
                 <!-- Big Interactive Switch Bar -->
                 <div class="panne-switch-container">
                     <div>
-                        <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 4px;">
+                        <div style="font-weight: 700; font-size: 1.05rem; margin-bottom: 4px; color: var(--text-main);">
                             Bascule Immédiate du Mode Panne
                         </div>
-                        <div style="font-size: 0.85rem; color: var(--text-muted);">
-                            Lorsque le mode panne est actif, tout appel sur <code>/checkout</code> renvoie HTTP 503 et écrit une ligne d'exception dans <code>logs/error.log</code>.
+                        <div style="font-size: 0.84rem; color: var(--text-muted); max-width: 520px; line-height: 1.5;">
+                            Lorsque le mode panne est actif, tout appel sur <code>/checkout</code> renvoie immédiatement HTTP 503 et écrit une ligne d'exception dans <code>logs/error.log</code>.
                         </div>
                     </div>
 
@@ -55,55 +55,63 @@
                     </div>
                 </div>
 
-                <!-- Stats Grid -->
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 28px;">
-                    <div style="background: var(--bg-subtle); padding: 20px; border-radius: var(--radius-md); text-align: center;">
-                        <div style="font-size: 2rem; font-weight: 800; color: var(--color-terracotta);" th:text="${triggerCount}">0</div>
-                        <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Erreurs 503 déclenchées</div>
+                <!-- Stats Grid (iOS Widget Style) -->
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 24px;">
+                    <div style="background: var(--bg-subtle); padding: 18px; border-radius: var(--radius-md); text-align: center; border: 1px solid var(--border-light);">
+                        <div style="font-size: 2rem; font-weight: 800; color: var(--ios-red); font-family: var(--font-display);" th:text="${triggerCount}">0</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.04em; margin-top: 2px;">Erreurs 503 déclenchées</div>
                     </div>
 
-                    <div style="background: var(--bg-subtle); padding: 20px; border-radius: var(--radius-md); text-align: center;">
-                        <div style="font-size: 2rem; font-weight: 800; color: var(--color-indigo);" th:text="${productsCount}">10</div>
-                        <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Produits en mémoire</div>
+                    <div style="background: var(--bg-subtle); padding: 18px; border-radius: var(--radius-md); text-align: center; border: 1px solid var(--border-light);">
+                        <div style="font-size: 2rem; font-weight: 800; color: var(--text-main); font-family: var(--font-display);" th:text="${productsCount}">10</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.04em; margin-top: 2px;">Articles en mémoire</div>
                     </div>
 
-                    <div style="background: var(--bg-subtle); padding: 20px; border-radius: var(--radius-md); text-align: center;">
-                        <div style="font-size: 2rem; font-weight: 800; color: var(--success);">8080</div>
-                        <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Port Serveur Tomcat</div>
+                    <div style="background: var(--bg-subtle); padding: 18px; border-radius: var(--radius-md); text-align: center; border: 1px solid var(--border-light);">
+                        <div style="font-size: 2rem; font-weight: 800; color: var(--ios-green); font-family: var(--font-display);">8080</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.04em; margin-top: 2px;">Port Tomcat Embarqué</div>
                     </div>
                 </div>
             </div>
 
             <!-- Testing & Integration Section for Teammates -->
             <div class="admin-card">
-                <h3 style="font-family: var(--font-serif); font-size: 1.3rem; margin-bottom: 16px; color: var(--color-indigo);">
-                    📋 Contrat & Commandes pour les Autres Membres
+                <h3 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin-bottom: 12px; color: var(--text-main);">
+                    📋 Commandes d'Intégration pour l'Équipe
                 </h3>
 
-                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">
-                    Utilisez ces requêtes pour tester et intégrer vos modules (JMeter - Membre 2, Kafka Collector - Membre 5, etc.) :
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 20px;">
+                    Commandes prêtes à l'emploi pour les tests de charge (Membre 2 - JMeter), collecteur Kafka (Membre 5), et vérification :
                 </p>
 
-                <div style="display: flex; flex-direction: column; gap: 14px;">
-                    <div style="background: #0F172A; color: #F1F5F9; padding: 14px 18px; border-radius: var(--radius-sm); font-family: monospace; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <div style="background: #1C1C1E; color: #F2F2F7; padding: 14px 18px; border-radius: var(--radius-sm); font-family: monospace; font-size: 0.84rem; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.08);">
                         <code>curl "http://localhost:8080/admin/panne?etat=on"</code>
-                        <button class="btn btn-secondary btn-sm btn-copy-code" data-code="curl http://localhost:8080/admin/panne?etat=on" style="padding: 4px 10px; font-size: 0.75rem;">Copier</button>
+                        <button class="btn btn-secondary btn-sm btn-copy-code" data-code="curl http://localhost:8080/admin/panne?etat=on" style="padding: 4px 10px; font-size: 0.75rem; background: rgba(255,255,255,0.12); color: white; border: none;">Copier</button>
                     </div>
 
-                    <div style="background: #0F172A; color: #F1F5F9; padding: 14px 18px; border-radius: var(--radius-sm); font-family: monospace; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="background: #1C1C1E; color: #F2F2F7; padding: 14px 18px; border-radius: var(--radius-sm); font-family: monospace; font-size: 0.84rem; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.08);">
                         <code>curl -i "http://localhost:8080/checkout"</code>
-                        <button class="btn btn-secondary btn-sm btn-copy-code" data-code="curl -i http://localhost:8080/checkout" style="padding: 4px 10px; font-size: 0.75rem;">Copier</button>
+                        <button class="btn btn-secondary btn-sm btn-copy-code" data-code="curl -i http://localhost:8080/checkout" style="padding: 4px 10px; font-size: 0.75rem; background: rgba(255,255,255,0.12); color: white; border: none;">Copier</button>
                     </div>
 
-                    <div style="background: #0F172A; color: #F1F5F9; padding: 14px 18px; border-radius: var(--radius-sm); font-family: monospace; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="background: #1C1C1E; color: #F2F2F7; padding: 14px 18px; border-radius: var(--radius-sm); font-family: monospace; font-size: 0.84rem; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.08);">
                         <code>curl "http://localhost:8080/admin/panne?etat=off"</code>
-                        <button class="btn btn-secondary btn-sm btn-copy-code" data-code="curl http://localhost:8080/admin/panne?etat=off" style="padding: 4px 10px; font-size: 0.75rem;">Copier</button>
+                        <button class="btn btn-secondary btn-sm btn-copy-code" data-code="curl http://localhost:8080/admin/panne?etat=off" style="padding: 4px 10px; font-size: 0.75rem; background: rgba(255,255,255,0.12); color: white; border: none;">Copier</button>
+                    </div>
+
+                    <div style="background: #1C1C1E; color: #F2F2F7; padding: 14px 18px; border-radius: var(--radius-sm); font-family: monospace; font-size: 0.84rem; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.08);">
+                        <code>curl -i "http://localhost:8080/nimporte-quoi"</code>
+                        <button class="btn btn-secondary btn-sm btn-copy-code" data-code="curl -i http://localhost:8080/nimporte-quoi" style="padding: 4px 10px; font-size: 0.75rem; background: rgba(255,255,255,0.12); color: white; border: none;">Copier (Test 404)</button>
                     </div>
                 </div>
 
-                <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border-light); display: flex; gap: 16px;">
+                <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border-light); display: flex; gap: 14px; flex-wrap: wrap;">
                     <a th:href="@{/checkout}" class="btn btn-secondary btn-sm" target="_blank">
-                        Tester /checkout dans un nouvel onglet ↗
+                        Tester /checkout dans un onglet ↗
+                    </a>
+                    <a th:href="@{/nimporte-quoi}" class="btn btn-secondary btn-sm" target="_blank">
+                        Tester /nimporte-quoi (404) ↗
                     </a>
                     <a th:href="@{/}" class="btn btn-secondary btn-sm">
                         Retour au Site
