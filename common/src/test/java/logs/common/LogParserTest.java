@@ -70,4 +70,21 @@ class LogParserTest {
     void dateInvalideDonneNull() {
         assertNull(LogParser.parse("10.0.0.5 - - [32/Foo/2026:99:99:99 +0000] \"GET / HTTP/1.1\" 200 5"));
     }
+
+    @Test
+    void paramtreDeSessionRetire() {
+        LogEntry e = LogParser.parse("0:0:0:0:0:0:0:1 - - [15/Oct/2026:09:23:26 +0100] "
+                + "\"GET /produits;SOUKLINE_SESSION=2E80BDF2579692642B07B2021194C57B HTTP/1.1\" 200 21052");
+        assertNotNull(e);
+        assertEquals("/produits", e.url);
+    }
+
+    @Test
+    void ligneTomcatReelleIpv6() {
+        LogEntry e = LogParser.parse("0:0:0:0:0:0:0:1 - - [15/Oct/2026:09:24:37 +0100] \"POST /panier/vider HTTP/1.1\" 302 -");
+        assertNotNull(e);
+        assertEquals("0:0:0:0:0:0:0:1", e.ip);
+        assertEquals("POST", e.method);
+        assertEquals(0L, e.bytes);
+    }
 }
