@@ -63,6 +63,10 @@ public final class LogParser {
         if (q >= 0) {
             p = p.substring(0, q);
         }
+        int sc = p.indexOf(';');
+        if (sc >= 0) {
+            p = p.substring(0, sc);   // ;SOUKLINE_SESSION=... (paramètre de session Tomcat)
+        }
         if (p.length() > 1 && p.endsWith("/")) {
             p = p.substring(0, p.length() - 1);
         }
