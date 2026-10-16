@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="header-head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} + ' | SoukLine Artisanal'">SoukLine - E-Commerce Artisanal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/soukline.css}">
+    <link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon">
+</head>
+<body>
+
+    <!-- Header Fragment -->
+    <header th:fragment="site-header" class="site-header">
+        <!-- Top status bar with Panne state & live indicator -->
+        <div class="top-announcement">
+            <div class="announcement-left">
+                <span>✨ Livraison offerte au Maroc dès 300 DH d'achat</span>
+                <span>•</span>
+                <span th:if="${isPanneActive}" class="panne-status-badge panne">
+                    🔴 Mode Panne Actif (Paiement 503)
+                </span>
+                <span th:unless="${isPanneActive}" class="panne-status-badge normal">
+                    🟢 Passerelle CMI Opérationnelle (200)
+                </span>
+            </div>
+            <div class="announcement-right">
+                <a th:href="@{/admin}" class="btn-admin">
+                    ⚙️ Panneau Admin Mode Panne (/admin)
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Navigation Bar -->
+        <div class="navbar-container">
+            <a th:href="@{/}" class="logo-wrapper">
+                <div class="logo-icon">🛍️</div>
+                <div class="logo-text">Souk<span>Line</span></div>
+            </a>
+
+            <!-- Search Form -->
+            <div class="search-bar">
+                <form th:action="@{/recherche}" method="get" class="search-form">
+                    <input type="text" name="q" placeholder="Rechercher (tapis, argan, tajine...)" th:value="${query}" required>
+                    <button type="submit" class="search-btn" title="Rechercher">🔍</button>
+                </form>
+            </div>
+
+            <!-- Navigation Links -->
+            <ul class="nav-links">
+                <li><a th:href="@{/}">Accueil</a></li>
+                <li><a th:href="@{/produits}">Catalogue</a></li>
+                <li><a th:href="@{/admin}">Mode Panne</a></li>
+            </ul>
+
+            <!-- Actions (Login, Cart) -->
+            <div class="nav-actions">
+                <div th:if="${currentUser != null}">
+                    <span style="font-size: 0.88rem; font-weight: 600; color: var(--text-main);" th:text="'Bonjour, ' + ${currentUser.name}"></span>
+                    <a th:href="@{/logout}" style="font-size: 0.8rem; color: var(--ios-red); margin-left: 6px;">(Déconnexion)</a>
+                </div>
+                <div th:unless="${currentUser != null}">
+                    <a th:href="@{/login}" class="btn btn-secondary btn-sm">Se connecter</a>
+                </div>
+
+                <a th:href="@{/panier}" class="btn-icon btn-cart">
+                    <span>🛒 Panier</span>
+                    <span class="badge-count" th:text="${cartItemCount}">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Footer Fragment -->
+    <footer th:fragment="site-footer" class="site-footer">
+        <div class="footer-container">
+            <div>
+                <div class="footer-brand">Souk<span>Line</span></div>
+                <p style="font-size: 0.88rem; line-height: 1.6; margin-bottom: 16px;">
+                    Plateforme e-commerce artisanale marocaine conçue pour l'architecture streaming temps réel & logs haute fréquence.
+                </p>
+                <p style="font-size: 0.8rem; color: #64748B;">
+                    Projet Traitement Parallèle en Streaming • Groupe 1 • Membre 1 (Site Web & Tomcat)
+                </p>
+            </div>
+
+            <div>
+                <div class="footer-title">Navigation</div>
+                <ul class="footer-links">
+                    <li><a th:href="@{/}">Accueil</a></li>
+                    <li><a th:href="@{/produits}">Tous les Produits</a></li>
+                    <li><a th:href="@{/panier}">Mon Panier</a></li>
+                    <li><a th:href="@{/checkout}">Passer Commande</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <div class="footer-title">Contrôle Démo</div>
+                <ul class="footer-links">
+                    <li><a th:href="@{/admin}">Panneau Admin Panne</a></li>
+                    <li><a th:href="@{/admin/panne(etat='on')}">Activer Panne (503)</a></li>
+                    <li><a th:href="@{/admin/panne(etat='off')}">Désactiver Panne (200)</a></li>
+                    <li><a th:href="@{/login}">Connexion Client</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <div class="footer-title">Architecture Logs</div>
+                <p style="font-size: 0.84rem; line-height: 1.6; margin-bottom: 10px;">
+                    <strong>Fichier logs :</strong> <code>logs/access.log</code><br>
+                    <strong>Format :</strong> Tomcat Common (CLF)<br>
+                    <strong>Journal Erreurs :</strong> <code>logs/error.log</code>
+                </p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <span>© 2026 SoukLine Inc. — Tous droits réservés. Thème Moderne iOS.</span>
+            <span>Serveur Tomcat Embarqué Spring Boot (Port 8080)</span>
+        </div>
+
+        <script th:src="@{/js/soukline.js}"></script>
+    </footer>
+
+</body>
+</html>

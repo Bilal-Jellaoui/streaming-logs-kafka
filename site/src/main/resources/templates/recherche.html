@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header-head('Recherche : ' + ${query})}"></head>
+<body>
+
+    <!-- Header -->
+    <div th:replace="~{fragments/layout :: site-header}"></div>
+
+    <main class="main-content">
+        <div class="container">
+
+            <div style="margin-bottom: 32px;">
+                <h1 class="section-title">
+                    Résultats de recherche pour <span style="color: var(--color-primary);" th:text="'« ' + ${query} + ' »'"></span>
+                </h1>
+                <p class="section-subtitle" th:text="${resultsCount} + ' article(s) trouvé(s)'"></p>
+            </div>
+
+            <!-- Products Grid -->
+            <div th:if="${not #lists.isEmpty(products)}" class="products-grid">
+                <div th:each="p : ${products}" class="product-card">
+                    <div class="card-image-box">
+                        <span class="product-badge" th:text="${p.badge}">Coup de cœur</span>
+                        <div class="card-icon-art" th:text="${p.icon}">✨</div>
+                    </div>
+
+                    <div class="product-card-body">
+                        <div class="product-category" th:text="${p.category}">Catégorie</div>
+                        <h3 class="product-name">
+                            <a th:href="@{/produits/{id}(id=${p.id})}" th:text="${p.name}">Nom Produit</a>
+                        </h3>
+
+                        <div class="product-rating">
+                            <span class="stars">★★★★★</span>
+                            <span th:text="${p.rating} + ' (' + ${p.reviewsCount} + ')'">4.8 (35)</span>
+                        </div>
+
+                        <p class="product-desc-short" th:text="${p.shortDescription}">Courte description...</p>
+
+                        <div class="product-card-footer">
+                            <div class="product-price" th:text="${p.formattedPrice}">220.00 DH</div>
+                            <button type="button" class="btn-add-cart btn-quick-add" th:attr="data-product-id=${p.id}">
+                                <span>+ Panier</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- No results -->
+            <div th:if="${#lists.isEmpty(products)}" style="text-align: center; padding: 60px 20px; background: white; border-radius: var(--radius-lg); border: 1px solid var(--border-light);">
+                <div style="font-size: 3.5rem; margin-bottom: 16px;">🔍</div>
+                <h2 style="font-family: var(--font-serif); margin-bottom: 8px;">Aucun résultat trouvé pour « <span th:text="${query}"></span> »</h2>
+                <p style="color: var(--text-muted); margin-bottom: 24px;">Vérifiez l'orthographe ou tentez une recherche plus générale (ex: cuir, tapis, théière, argan).</p>
+                <a th:href="@{/produits}" class="btn btn-primary">Parcourir tout le catalogue</a>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div th:replace="~{fragments/layout :: site-footer}"></div>
+
+</body>
+</html>

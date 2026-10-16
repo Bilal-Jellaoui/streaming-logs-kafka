@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header-head('Erreur 503 - Service Indisponible')}"></head>
+<body>
+
+    <!-- Header -->
+    <div th:replace="~{fragments/layout :: site-header}"></div>
+
+    <main class="main-content">
+        <div class="container" style="max-width: 660px; padding: 60px 20px;">
+
+            <div class="ios-error-card card-503">
+
+                <div class="ios-error-icon" style="background: rgba(255, 59, 48, 0.14); color: var(--ios-red);">
+                    ⚠️
+                </div>
+
+                <div class="ios-badge-code" style="background: rgba(255, 59, 48, 0.16); color: #D70015;">
+                    STATUT HTTP 503 • SERVICE UNAVAILABLE
+                </div>
+
+                <h1 style="font-family: var(--font-display); font-size: 2rem; font-weight: 800; color: var(--text-main); margin-bottom: 12px; letter-spacing: -0.02em;">
+                    Passerelle de Paiement Indisponible
+                </h1>
+
+                <p style="color: var(--text-muted); font-size: 0.96rem; line-height: 1.6; margin-bottom: 24px;">
+                    La passerelle bancaire est temporairement hors service (Mode Panne simulé activé pour la démonstration du pipeline streaming Kafka).
+                </p>
+
+                <!-- iOS Inset Technical Details Box -->
+                <div class="ios-inset-box">
+                    <div class="ios-inset-row">
+                        <span style="color: var(--text-muted); font-weight: 500;">Route appelée :</span>
+                        <code style="font-weight: 700; color: var(--text-main); background: rgba(0,0,0,0.06); padding: 2px 8px; border-radius: 6px;" th:text="${path != null ? path : '/checkout'}">/checkout</code>
+                    </div>
+                    <div class="ios-inset-row">
+                        <span style="color: var(--text-muted); font-weight: 500;">Journal Tomcat :</span>
+                        <span style="font-weight: 600; color: var(--ios-red);">Ligne 503 écrite dans <code>logs/access.log</code></span>
+                    </div>
+                    <div class="ios-inset-row">
+                        <span style="color: var(--text-muted); font-weight: 500;">Journal Erreurs :</span>
+                        <span style="font-weight: 600; color: var(--text-secondary);">Exception enregistrée dans <code>logs/error.log</code></span>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+                    <a th:href="@{/admin/panne(etat='off')}" class="btn btn-primary" style="background: linear-gradient(180deg, #34C759 0%, #248A3D 100%); box-shadow: 0 4px 14px rgba(52, 199, 89, 0.35);">
+                        <span>✔ Désactiver la panne (/admin)</span>
+                    </a>
+                    <a th:href="@{/panier}" class="btn btn-secondary">
+                        <span>Retour au Panier</span>
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div th:replace="~{fragments/layout :: site-footer}"></div>
+
+</body>
+</html>

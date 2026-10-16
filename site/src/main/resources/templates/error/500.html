@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header-head('Erreur Interne - 500')}"></head>
+<body>
+
+    <!-- Header -->
+    <div th:replace="~{fragments/layout :: site-header}"></div>
+
+    <main class="main-content">
+        <div class="container" style="max-width: 640px; padding: 60px 20px;">
+
+            <div class="ios-error-card card-503">
+
+                <div class="ios-error-icon" style="background: rgba(255, 59, 48, 0.14); color: var(--ios-red);">
+                    ⚠️
+                </div>
+
+                <div class="ios-badge-code" style="background: rgba(255, 59, 48, 0.16); color: #D70015;">
+                    STATUT HTTP 500 • INTERNAL SERVER ERROR
+                </div>
+
+                <h1 style="font-family: var(--font-display); font-size: 2rem; font-weight: 800; color: var(--text-main); margin-bottom: 12px; letter-spacing: -0.02em;">
+                    Erreur Interne du Serveur
+                </h1>
+
+                <p style="color: var(--text-muted); font-size: 0.96rem; line-height: 1.6; margin-bottom: 24px;">
+                    Une anomalie serveur imprévue est survenue lors de l'exécution de la requête.
+                </p>
+
+                <!-- iOS Inset Technical Details Box -->
+                <div class="ios-inset-box">
+                    <div class="ios-inset-row">
+                        <span style="color: var(--text-muted); font-weight: 500;">Route appelée :</span>
+                        <code style="font-weight: 700; color: var(--text-main); background: rgba(0,0,0,0.06); padding: 2px 8px; border-radius: 6px;" th:text="${path != null ? path : '/'}">/</code>
+                    </div>
+                    <div class="ios-inset-row">
+                        <span style="color: var(--text-muted); font-weight: 500;">Message :</span>
+                        <span style="font-weight: 600; color: var(--ios-red);" th:text="${message != null ? message : 'Erreur interne imprévue'}">Erreur</span>
+                    </div>
+                    <div class="ios-inset-row">
+                        <span style="color: var(--text-muted); font-weight: 500;">Journal Erreurs :</span>
+                        <span style="font-weight: 600; color: var(--text-secondary);">Stacktrace complète dans <code>logs/error.log</code></span>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+                    <a th:href="@{/}" class="btn btn-primary" style="padding: 12px 28px;">
+                        <span>Retour à l'accueil</span>
+                    </a>
+                    <a th:href="@{/produits}" class="btn btn-secondary" style="padding: 12px 24px;">
+                        <span>Catalogue</span>
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div th:replace="~{fragments/layout :: site-footer}"></div>
+
+</body>
+</html>
