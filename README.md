@@ -1,26 +1,23 @@
 <div align="center">
 
-# 🌊 SoukLine : analyse de logs web en temps réel
+<img src="docs/banner.svg" alt="SoukLine : analyse de logs web en temps réel" width="100%">
 
-**Un vrai site e-commerce → de vrais logs → Kafka → deux moteurs de traitement parallèles → tableau de bord avec alerte.**
+<br>
 
-[![CI](https://github.com/Bilal-Jellaoui/streaming-logs-kafka/actions/workflows/ci.yml/badge.svg)](https://github.com/Bilal-Jellaoui/streaming-logs-kafka/actions/workflows/ci.yml)
-![Java](https://img.shields.io/badge/Java-17-ED8B00?logo=openjdk&logoColor=white)
-![Apache Kafka](https://img.shields.io/badge/Apache%20Kafka-3.7.0-231F20?logo=apachekafka&logoColor=white)
-![Kafka Streams](https://img.shields.io/badge/Kafka%20Streams-Moteur%20A-6C5CE7)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.4-6DB33F?logo=springboot&logoColor=white)
-![Maven](https://img.shields.io/badge/Maven-multi--modules-C71A36?logo=apachemaven&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-3%20brokers%20KRaft-2496ED?logo=docker&logoColor=white)
+[![CI](https://img.shields.io/github/actions/workflow/status/Bilal-Jellaoui/streaming-logs-kafka/ci.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=CI)](https://github.com/Bilal-Jellaoui/streaming-logs-kafka/actions/workflows/ci.yml)
+![Java](https://img.shields.io/badge/Java-17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Kafka](https://img.shields.io/badge/Apache%20Kafka-3.7.0-231F20?style=for-the-badge&logo=apachekafka&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.4-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-3%20brokers-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Maven](https://img.shields.io/badge/Maven-multi--modules-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white)
 
-*Master Big Data, IA & Applications Avancées · Université Ibn Tofaïl, Kénitra · Groupe 1 (6 membres)*
+**Un vrai site e-commerce, de vrais logs, Kafka, deux moteurs de traitement parallèles et une alerte en direct.**
 
+<br>
 
-<img src="docs/demo/site.png" alt="Tableau de bord : alerte 5xx à 25 %" width="820">
-<sub>Page d'acceuil site.</sub>
+<img src="docs/demo/alerte.png" alt="Tableau de bord : alerte 5xx à 25 %" width="860">
 
-<img src="docs/demo/alerte.png" alt="Tableau de bord : alerte 5xx à 25 %" width="820">
-
-<sub>Mode panne activé : <code>/checkout</code> renvoie HTTP 503, les deux moteurs comptent <b>10 erreurs sur 40 requêtes</b> et le tableau de bord déclenche l'<b>ALERTE</b>.</sub>
+<sub>Mode panne activé : <code>/checkout</code> renvoie HTTP 503. Les deux moteurs comptent <b>10 erreurs sur 40 requêtes</b> et le tableau de bord déclenche l'<b>ALERTE</b>.</sub>
 
 </div>
 
@@ -30,15 +27,16 @@
 
 1. [Résumé](#-résumé)
 2. [Architecture](#-architecture)
-3. [Technologies](#-technologies)
-4. [Les deux moteurs](#-les-deux-moteurs)
-5. [Démarrage rapide](#-démarrage-rapide)
-6. [Démo et résultats](#-démo-et-résultats)
-7. [Problèmes rencontrés et solutions](#-problèmes-rencontrés-et-solutions)
-8. [Tests et qualité](#-tests-et-qualité)
-9. [Structure du dépôt](#-structure-du-dépôt)
-10. [Équipe](#-équipe)
-11. [Workflow Git](#-workflow-git)
+3. [Le site SoukLine](#-le-site-soukline)
+4. [Technologies](#-technologies)
+5. [Les deux moteurs](#-les-deux-moteurs)
+6. [Démarrage rapide](#-démarrage-rapide)
+7. [Démo et résultats](#-démo-et-résultats)
+8. [Problèmes rencontrés et solutions](#-problèmes-rencontrés-et-solutions)
+9. [Tests et qualité](#-tests-et-qualité)
+10. [Structure du dépôt](#-structure-du-dépôt)
+11. [Équipe](#-équipe)
+12. [Workflow Git](#-workflow-git)
 
 ---
 
@@ -62,16 +60,25 @@ Les deux moteurs doivent donner **les mêmes chiffres** : c'est ce qui valide le
 
 ```mermaid
 flowchart LR
-    V["Visiteurs / JMeter"] --> S["Site SoukLine<br/>Spring Boot :8080"]
-    S --> L[("access.log<br/>Tomcat")]
-    L --> C["LogCollector<br/>(tail -f)"]
-    C --> K{{"Kafka · 3 brokers<br/>topic web-logs · 8 partitions"}}
-    K --> A["Moteur A<br/>Kafka Streams"]
-    K --> B["Moteur B<br/>ExecutorService + CyclicBarrier"]
-    A --> SA{{"stats-a"}}
-    B --> SB{{"stats-b"}}
-    SA --> D["DisplayApp<br/>tableau de bord + alerte"]
+    V(["Visiteurs / JMeter"]):::ext --> S["Site SoukLine<br/>Spring Boot :8080"]:::site
+    S --> L[("access.log<br/>Tomcat")]:::file
+    L --> C["LogCollector<br/>(tail -f)"]:::collector
+    C --> K{{"Kafka · 3 brokers<br/>web-logs · 8 partitions"}}:::kafka
+    K --> A["Moteur A<br/>Kafka Streams"]:::enginea
+    K --> B["Moteur B<br/>ExecutorService + CyclicBarrier"]:::engineb
+    A --> SA{{"stats-a"}}:::kafka
+    B --> SB{{"stats-b"}}:::kafka
+    SA --> D["DisplayApp<br/>tableau de bord + alerte"]:::display
     SB --> D
+
+    classDef ext fill:#e2e8f0,stroke:#64748b,color:#0f172a
+    classDef site fill:#1d4ed8,stroke:#1e3a8a,color:#fff
+    classDef file fill:#334155,stroke:#0f172a,color:#fff
+    classDef collector fill:#0f766e,stroke:#134e4a,color:#fff
+    classDef kafka fill:#111827,stroke:#f59e0b,stroke-width:2px,color:#fbbf24
+    classDef enginea fill:#6d28d9,stroke:#4c1d95,color:#fff
+    classDef engineb fill:#be185d,stroke:#831843,color:#fff
+    classDef display fill:#dc2626,stroke:#7f1d1d,color:#fff
 ```
 
 **Contrats entre les composants**
@@ -83,6 +90,25 @@ flowchart LR
 | JSON des résultats | `{"engine":"A\|B","windowStart":<ms>,"url":"/checkout","requests":10,"errors5xx":10}` |
 | Totaux | **Cumulatifs** : le dernier message d'une (fenêtre, URL) fait foi |
 | Base de temps | L'**heure écrite dans la ligne de log**, identique pour A et B |
+
+---
+
+## 🛍️ Le site SoukLine
+
+Le site n'est pas une maquette : c'est une vraie application **Spring Boot** (artisanat marocain : tapis, argan, poterie, cuir). **Chaque visite écrit une vraie ligne** dans `site/logs/access.log`, que le collecteur envoie ensuite dans Kafka.
+
+<p align="center"><img src="docs/site/accueil.png" alt="Page d'accueil du site SoukLine" width="860"></p>
+
+**Routes principales :** `/` (accueil), `/produits` (catalogue), `/produits/{id}`, `/recherche`, `/panier`, `/checkout`, `/admin` (mode panne).
+
+Le **mode panne** sert à la démonstration : une fois activé, `/checkout` renvoie réellement **HTTP 503** et la ligne correspondante apparaît dans le journal.
+
+<table>
+  <tr>
+    <td align="center" width="50%"><img src="docs/site/admin-panne.png" alt="Panneau de contrôle du mode panne"><br><sub><b>Panneau d'administration</b> : bascule du mode panne</sub></td>
+    <td align="center" width="50%"><img src="docs/site/erreur-503.png" alt="Page d'erreur 503 du paiement"><br><sub><b>HTTP 503</b> sur <code>/checkout</code> en mode panne</sub></td>
+  </tr>
+</table>
 
 ---
 
