@@ -105,6 +105,10 @@ Le **mode panne** sert à la démonstration : une fois activé, `/checkout` renv
 
 <table>
   <tr>
+    <td align="center" width="50%"><img src="docs/site/catalogue.png" alt="Catalogue des produits"><br><sub><b>Catalogue</b> : 10 pièces artisanales, filtres et tri</sub></td>
+    <td align="center" width="50%"><img src="docs/site/checkout.png" alt="Validation de la commande"><br><sub><b>Validation de la commande</b> (<code>/checkout</code>) : la page qui renvoie 503 en mode panne</sub></td>
+  </tr>
+  <tr>
     <td align="center" width="50%"><img src="docs/site/admin-panne.png" alt="Panneau de contrôle du mode panne"><br><sub><b>Panneau d'administration</b> : bascule du mode panne</sub></td>
     <td align="center" width="50%"><img src="docs/site/erreur-503.png" alt="Page d'erreur 503 du paiement"><br><sub><b>HTTP 503</b> sur <code>/checkout</code> en mode panne</sub></td>
   </tr>
