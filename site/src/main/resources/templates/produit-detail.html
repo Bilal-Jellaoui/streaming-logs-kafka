@@ -10,63 +10,60 @@
         <div class="container">
 
             <!-- Breadcrumb -->
-            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 24px;">
+            <div style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 24px;">
                 <a th:href="@{/}">Accueil</a> &gt;
                 <a th:href="@{/produits}">Produits</a> &gt;
                 <a th:href="@{/produits(categorie=${product.category})}" th:text="${product.category}">Catégorie</a> &gt;
                 <span th:text="${product.name}" style="color: var(--text-main); font-weight: 600;"></span>
             </div>
 
-            <!-- Product Showcase Layout -->
-            <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 48px; background: var(--bg-surface); padding: 40px; border-radius: var(--radius-lg); border: 1px solid var(--border-light); box-shadow: var(--shadow-sm); margin-bottom: 48px;">
+            <!-- Product Showcase Layout (Liquid Glass Card) -->
+            <div class="product-detail-layout">
 
-                <!-- Image Box -->
-                <div style="background: linear-gradient(135deg, #F8F5EE, #EFE8DA); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 380px; position: relative;">
-                    <span class="product-badge" style="font-size: 0.85rem; padding: 6px 14px;" th:text="${product.badge}">Best-seller</span>
-                    <div style="font-size: 8rem; user-select: none;" th:text="${product.icon}">✨</div>
-                    <div style="position: absolute; bottom: 16px; font-size: 0.8rem; color: var(--text-muted);">
-                        🌿 Pièce certifiée fait main par artisan local
-                    </div>
+                <!-- Real Product Image Box -->
+                <div class="product-detail-image-box">
+                    <span class="product-badge" style="font-size: 0.82rem; padding: 6px 16px; top: 18px; left: 18px;" th:text="${product.badge}">Best-seller</span>
+                    <img th:src="@{${product.imageUrl}}" th:alt="${product.name}" class="product-detail-img">
                 </div>
 
                 <!-- Info Box -->
                 <div>
-                    <span class="product-category" style="font-size: 0.9rem;" th:text="${product.category}">Catégorie</span>
-                    <h1 style="font-family: var(--font-serif); font-size: 2.2rem; color: var(--color-indigo); margin: 8px 0 16px; line-height: 1.25;" th:text="${product.name}">Nom du Produit</h1>
+                    <span class="product-category" style="font-size: 0.82rem;" th:text="${product.category}">Catégorie</span>
+                    <h1 style="font-family: var(--font-display); font-size: 2.1rem; font-weight: 800; color: var(--text-main); margin: 6px 0 14px; line-height: 1.25; letter-spacing: -0.025em;" th:text="${product.name}">Nom du Produit</h1>
 
-                    <div class="product-rating" style="margin-bottom: 20px; font-size: 0.95rem;">
+                    <div class="product-rating" style="margin-bottom: 20px; font-size: 0.88rem;">
                         <span class="stars">★★★★★</span>
-                        <span th:text="${product.rating} + ' / 5.0 (' + ${product.reviewsCount} + ' avis clients vérifiés)'">4.9 / 5.0 (38 avis)</span>
+                        <span th:text="${product.rating} + ' / 5.0 (' + ${product.reviewsCount} + ' avis vérifiés)'">4.9 / 5.0 (38 avis)</span>
                     </div>
 
-                    <div style="font-size: 2.2rem; font-weight: 800; color: var(--color-terracotta); font-family: var(--font-serif); margin-bottom: 24px;" th:text="${product.formattedPrice}">
+                    <div style="font-size: 2.2rem; font-weight: 800; color: var(--text-main); font-family: var(--font-display); letter-spacing: -0.02em; margin-bottom: 24px;" th:text="${product.formattedPrice}">
                         1450.00 DH
                     </div>
 
-                    <p style="font-size: 1rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 30px;" th:text="${product.description}">
+                    <p style="font-size: 0.96rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 32px;" th:text="${product.description}">
                         Description détaillée...
                     </p>
 
                     <!-- Add to Cart Form -->
-                    <form th:action="@{/panier/ajouter}" method="post" style="display: flex; gap: 16px; align-items: center; margin-bottom: 32px;">
+                    <form th:action="@{/panier/ajouter}" method="post" style="display: flex; gap: 14px; align-items: center; margin-bottom: 32px;">
                         <input type="hidden" name="productId" th:value="${product.id}">
 
-                        <div style="display: flex; align-items: center; border: 1.5px solid var(--border-light); border-radius: var(--radius-full); background: white; overflow: hidden;">
-                            <label for="quantity-input" style="padding-left: 14px; font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">Qté :</label>
-                            <input id="quantity-input" type="number" name="quantity" value="1" min="1" max="10" style="width: 60px; padding: 10px; border: none; outline: none; text-align: center; font-weight: 700;">
+                        <div style="display: flex; align-items: center; border: 1px solid rgba(0,0,0,0.12); border-radius: var(--radius-full); background: rgba(255, 255, 255, 0.9); overflow: hidden; padding-left: 14px;">
+                            <label for="quantity-input" style="font-size: 0.82rem; font-weight: 600; color: var(--text-muted);">Qté :</label>
+                            <input id="quantity-input" type="number" name="quantity" value="1" min="1" max="10" style="width: 55px; padding: 10px; border: none; outline: none; text-align: center; font-weight: 700; background: transparent;">
                         </div>
 
-                        <button type="submit" class="btn btn-primary" style="flex: 1;">
-                            <span>🛒 Ajouter au Panier</span>
+                        <button type="submit" class="btn btn-primary" style="flex: 1; padding: 13px 24px;">
+                            <span>Ajouter au Panier</span>
                         </button>
                     </form>
 
-                    <!-- Badges & Guarantees -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding-top: 24px; border-top: 1px solid var(--border-light); font-size: 0.85rem; color: var(--text-muted);">
-                        <div>🚚 <strong>Livraison Express :</strong> 24h à 48h partout au Maroc</div>
-                        <div>🔒 <strong>Paiement Sécurisé :</strong> Carte CMI & cryptage SSL</div>
-                        <div>↩️ <strong>Retours Faciles :</strong> 14 jours pour changer d'avis</div>
-                        <div>📦 <strong>Stock Disponible :</strong> <span style="color: var(--success); font-weight: 600;" th:text="${product.stock} + ' unités'"></span></div>
+                    <!-- Minimalist Specifications Grid -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding-top: 24px; border-top: 1px solid rgba(0, 0, 0, 0.06); font-size: 0.84rem; color: var(--text-secondary);">
+                        <div><strong>Livraison :</strong> 24h à 48h partout au Maroc</div>
+                        <div><strong>Paiement :</strong> Passerelle sécurisée CMI & SSL</div>
+                        <div><strong>Retours :</strong> 14 jours pour échanger</div>
+                        <div><strong>Disponibilité :</strong> <span style="color: #248A3D; font-weight: 600;" th:text="${product.stock} + ' unités en stock'"></span></div>
                     </div>
                 </div>
 

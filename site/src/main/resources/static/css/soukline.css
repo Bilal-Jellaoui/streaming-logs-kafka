@@ -1,76 +1,75 @@
 /* ==============================================================================
-   SoukLine - Modern Apple iOS-Themed Design System & E-Commerce Stylesheet
+   SoukLine - Apple iOS Liquid Glass Design System
+   Minimalist, Ultra-Refined & Modern Architecture
    ============================================================================== */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
 
 :root {
   /* Apple iOS Typography Stack */
-  --font-main: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", -apple-system, sans-serif;
+  --font-main: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", sans-serif;
   --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Plus Jakarta Sans", sans-serif;
-  --font-serif: -apple-system, BlinkMacSystemFont, "SF Pro Display", serif;
 
-  /* Apple iOS System Palette + Moroccan Artisanal Harmony */
+  /* Apple iOS Curated Palette */
   --ios-blue: #007AFF;
-  --ios-blue-dark: #0056B3;
-  --ios-blue-light: #EBF5FF;
+  --ios-blue-dark: #0062D2;
+  --ios-blue-light: rgba(0, 122, 255, 0.12);
   --ios-green: #34C759;
-  --ios-green-light: #E8F8EE;
+  --ios-green-light: rgba(52, 199, 89, 0.14);
   --ios-red: #FF3B30;
-  --ios-red-light: #FEECEB;
+  --ios-red-light: rgba(255, 59, 48, 0.14);
   --ios-orange: #FF9500;
-  --ios-orange-light: #FFF4E5;
+  --ios-orange-light: rgba(255, 149, 0, 0.14);
   --ios-indigo: #5856D6;
 
-  /* Warm Artisanal Accents */
+  /* Warm Moroccan Accent */
   --color-primary: #D97706;
   --color-primary-dark: #B45309;
-  --color-primary-light: #FEF3C7;
   --color-terracotta: #E05A47;
-  --color-terracotta-dark: #C2410C;
 
-  /* Apple iOS Backgrounds & Surfaces (Light Mode) */
-  --bg-page: #F2F2F7;
-  --bg-surface: #FFFFFF;
-  --bg-surface-glass: rgba(255, 255, 255, 0.82);
-  --bg-surface-elevated: #FFFFFF;
-  --bg-subtle: #F8F8FA;
-  --bg-inset: rgba(118, 118, 128, 0.08);
-  --bg-inset-hover: rgba(118, 118, 128, 0.12);
+  /* Apple Liquid Glass Surfaces */
+  --bg-page: #F6F7F9;
+  --glass-surface: rgba(255, 255, 255, 0.68);
+  --glass-surface-elevated: rgba(255, 255, 255, 0.82);
+  --glass-surface-subtle: rgba(255, 255, 255, 0.45);
+  --glass-surface-solid: #FFFFFF;
 
-  /* iOS Hairline Borders & Dividers */
-  --border-light: rgba(60, 60, 67, 0.12);
-  --border-subtle: rgba(60, 60, 67, 0.08);
-  --border-focus: var(--ios-blue);
+  /* Liquid Glass Specular Borders */
+  --glass-border: rgba(255, 255, 255, 0.75);
+  --glass-border-subtle: rgba(0, 0, 0, 0.06);
+  --glass-blur: blur(28px) saturate(190%);
+  --glass-blur-nav: blur(32px) saturate(200%);
 
-  /* iOS System Label Colors */
-  --text-main: #1C1C1E;
-  --text-secondary: #3A3A3C;
-  --text-muted: #8E8E93;
-  --text-tertiary: #AEAEB2;
+  /* Liquid Glass Specular Elevation */
+  --glass-shadow: 
+    0 12px 32px -4px rgba(0, 0, 0, 0.05),
+    0 2px 6px rgba(0, 0, 0, 0.02),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 1px 0 rgba(0, 0, 0, 0.02);
+  --glass-shadow-hover: 
+    0 20px 48px -8px rgba(0, 0, 0, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.03),
+    inset 0 1px 2px 0 rgba(255, 255, 255, 1);
+  --glass-shadow-sm: 
+    0 4px 14px -2px rgba(0, 0, 0, 0.04),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
 
-  --success: var(--ios-green);
-  --danger: var(--ios-red);
-  --warning: var(--ios-orange);
+  /* iOS System Typography Colors */
+  --text-main: #1D1D1F;
+  --text-secondary: #424245;
+  --text-muted: #86868B;
+  --text-light: #A1A1A6;
 
-  /* Apple Layered Diffuse Soft Shadows */
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
-  --shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03);
-  --shadow-lg: 0 16px 40px -8px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
-  --shadow-glass: 0 12px 36px 0 rgba(0, 0, 0, 0.07);
-  --shadow-glow: 0 8px 24px rgba(0, 122, 255, 0.25);
-
-  /* Apple Smooth Radii (Squircles) */
-  --radius-xs: 6px;
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --radius-lg: 22px;
-  --radius-xl: 28px;
+  /* Apple Continuous Curves (Squircles) */
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
   --radius-full: 9999px;
 
-  /* Apple Fluid Spring-like Transition */
-  --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-fast: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Fluid Apple Spring Physics */
+  --transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 *, *::before, *::after {
@@ -84,12 +83,18 @@
 body {
   font-family: var(--font-main);
   background-color: var(--bg-page);
+  /* Organic Ambient Light Gradient Mesh for Glass Refraction */
+  background-image: 
+    radial-gradient(at 15% 15%, rgba(0, 122, 255, 0.06) 0px, transparent 48%),
+    radial-gradient(at 85% 18%, rgba(217, 119, 6, 0.05) 0px, transparent 45%),
+    radial-gradient(at 50% 80%, rgba(88, 86, 214, 0.04) 0px, transparent 50%);
+  background-attachment: fixed;
   color: var(--text-main);
   line-height: 1.5;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  letter-spacing: -0.011em;
+  letter-spacing: -0.012em;
 }
 
 a {
@@ -99,28 +104,27 @@ a {
 }
 
 /* ------------------------------------------------------------------------------
-   Header & iOS Translucent Navigation Bar
+   Liquid Glass Header & iOS Navigation Bar
    ------------------------------------------------------------------------------ */
 .site-header {
   position: sticky;
   top: 0;
   z-index: 1000;
-  background: var(--bg-surface-glass);
-  backdrop-filter: blur(25px) saturate(180%);
-  -webkit-backdrop-filter: blur(25px) saturate(180%);
-  border-bottom: 0.5px solid var(--border-light);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  background: var(--glass-surface);
+  backdrop-filter: var(--glass-blur-nav);
+  -webkit-backdrop-filter: var(--glass-blur-nav);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
 }
 
 .top-announcement {
-  background: rgba(28, 28, 30, 0.95);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(29, 29, 31, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   color: #FFFFFF;
   font-size: 0.78rem;
   font-weight: 500;
-  padding: 8px 20px;
-  text-align: center;
+  padding: 8px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -138,31 +142,46 @@ a {
 .panne-status-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 12px;
+  gap: 7px;
+  padding: 3px 12px;
   border-radius: var(--radius-full);
-  font-size: 0.75rem;
+  font-size: 0.74rem;
   font-weight: 600;
   letter-spacing: -0.01em;
   transition: var(--transition);
 }
 
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
 .panne-status-badge.normal {
-  background: rgba(52, 199, 89, 0.18);
+  background: rgba(52, 199, 89, 0.16);
   color: #248A3D;
-  border: 1px solid rgba(52, 199, 89, 0.35);
+  border: 1px solid rgba(52, 199, 89, 0.3);
+}
+.panne-status-badge.normal .status-dot {
+  background: #34C759;
+  box-shadow: 0 0 8px rgba(52, 199, 89, 0.8);
 }
 
 .panne-status-badge.panne {
-  background: rgba(255, 59, 48, 0.22);
+  background: rgba(255, 59, 48, 0.18);
   color: #D70015;
-  border: 1px solid rgba(255, 59, 48, 0.4);
+  border: 1px solid rgba(255, 59, 48, 0.35);
   animation: pulse-ios 1.8s infinite;
+}
+.panne-status-badge.panne .status-dot {
+  background: #FF3B30;
+  box-shadow: 0 0 8px rgba(255, 59, 48, 0.8);
 }
 
 @keyframes pulse-ios {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.88; transform: scale(1.02); }
+  50% { opacity: 0.86; transform: scale(1.02); }
 }
 
 .navbar-container {
@@ -172,9 +191,10 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: 24px;
 }
 
+/* Minimalist Logo */
 .logo-wrapper {
   display: flex;
   align-items: center;
@@ -183,29 +203,30 @@ a {
 }
 
 .logo-icon {
-  width: 38px;
-  height: 38px;
-  background: linear-gradient(135deg, #007AFF, #5856D6);
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(145deg, #007AFF 0%, #0056B3 100%);
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 1.25rem;
-  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+  font-size: 1rem;
+  font-weight: 800;
+  box-shadow: 0 4px 14px rgba(0, 122, 255, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.4);
   transition: var(--transition);
 }
 
 .logo-wrapper:hover .logo-icon {
-  transform: scale(1.06);
+  transform: scale(1.05);
 }
 
 .logo-text {
   font-family: var(--font-display);
-  font-size: 1.45rem;
+  font-size: 1.4rem;
   font-weight: 800;
   color: var(--text-main);
-  letter-spacing: -0.03em;
+  letter-spacing: -0.035em;
 }
 
 .logo-text span {
@@ -215,28 +236,28 @@ a {
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   list-style: none;
 }
 
 .nav-links a {
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-secondary);
-  padding: 8px 14px;
+  padding: 7px 14px;
   border-radius: var(--radius-sm);
   transition: var(--transition-fast);
 }
 
 .nav-links a:hover {
-  color: var(--ios-blue);
-  background: var(--bg-inset);
+  color: var(--text-main);
+  background: rgba(0, 0, 0, 0.04);
 }
 
-/* iOS Pill Search Bar */
+/* iOS Liquid Glass Search Bar */
 .search-bar {
   flex: 1;
-  max-width: 340px;
+  max-width: 320px;
   position: relative;
 }
 
@@ -244,7 +265,7 @@ a {
   display: flex;
   align-items: center;
   background: rgba(118, 118, 128, 0.08);
-  border: 1px solid rgba(60, 60, 67, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
   border-radius: var(--radius-full);
   padding: 3px 12px;
   transition: var(--transition);
@@ -253,7 +274,7 @@ a {
 .search-form:focus-within {
   background: #FFFFFF;
   border-color: var(--ios-blue);
-  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.18);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.16);
 }
 
 .search-form input {
@@ -262,7 +283,7 @@ a {
   background: transparent;
   outline: none;
   font-family: inherit;
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   padding: 6px 6px;
   color: var(--text-main);
 }
@@ -285,7 +306,13 @@ a {
 
 .search-btn:hover {
   color: var(--ios-blue);
-  transform: scale(1.1);
+}
+
+.search-btn svg {
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
+  stroke-width: 2.2;
 }
 
 .nav-actions {
@@ -302,7 +329,7 @@ a {
   padding: 8px 16px;
   border-radius: var(--radius-full);
   font-weight: 600;
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   transition: var(--transition);
   cursor: pointer;
   border: none;
@@ -312,13 +339,12 @@ a {
   background: var(--text-main);
   color: white;
   position: relative;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--glass-shadow-sm);
 }
 
 .btn-cart:hover {
   background: #000000;
   transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
 }
 
 .btn-cart:active {
@@ -326,7 +352,7 @@ a {
 }
 
 .badge-count {
-  background: var(--ios-red);
+  background: var(--ios-blue);
   color: white;
   border-radius: var(--radius-full);
   padding: 2px 7px;
@@ -341,16 +367,16 @@ a {
   border: 1px solid rgba(255, 149, 0, 0.25);
   border-radius: var(--radius-full);
   padding: 4px 12px;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 600;
 }
 
 .btn-admin:hover {
-  background: rgba(255, 149, 0, 0.22);
+  background: rgba(255, 149, 0, 0.2);
 }
 
 /* ------------------------------------------------------------------------------
-   iOS Style Buttons & Controls
+   Liquid Glass Buttons & Controls
    ------------------------------------------------------------------------------ */
 .btn {
   display: inline-flex;
@@ -359,8 +385,8 @@ a {
   gap: 8px;
   font-family: inherit;
   font-weight: 600;
-  font-size: 0.92rem;
-  padding: 12px 22px;
+  font-size: 0.9rem;
+  padding: 11px 22px;
   border-radius: var(--radius-md);
   border: none;
   cursor: pointer;
@@ -376,30 +402,34 @@ a {
 .btn-primary {
   background: linear-gradient(180deg, #007AFF 0%, #0062D2 100%);
   color: #FFFFFF;
-  box-shadow: 0 4px 14px rgba(0, 122, 255, 0.35);
+  box-shadow: 0 4px 16px rgba(0, 122, 255, 0.32), inset 0 1px 1px rgba(255, 255, 255, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .btn-primary:hover {
   background: linear-gradient(180deg, #0A84FF 0%, #006CE8 100%);
-  box-shadow: 0 6px 20px rgba(0, 122, 255, 0.45);
+  box-shadow: 0 6px 22px rgba(0, 122, 255, 0.42);
   transform: translateY(-1px);
 }
 
+/* Liquid Glass Secondary Button */
 .btn-secondary {
-  background: #FFFFFF;
+  background: var(--glass-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   color: var(--text-main);
-  border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-xs);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow-sm);
 }
 
 .btn-secondary:hover {
-  background: var(--bg-subtle);
-  border-color: rgba(60, 60, 67, 0.2);
+  background: var(--glass-surface-elevated);
+  border-color: rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
 }
 
 .btn-danger {
-  background: linear-gradient(180deg, #FF3B30 0%, #E02B20 100%);
+  background: linear-gradient(180deg, #FF3B30 0%, #D70015 100%);
   color: white;
   box-shadow: 0 4px 14px rgba(255, 59, 48, 0.3);
 }
@@ -423,7 +453,7 @@ a {
    ------------------------------------------------------------------------------ */
 .hero-section {
   position: relative;
-  background: linear-gradient(180deg, #0F172A 0%, #1E293B 100%);
+  background: linear-gradient(180deg, #0B111E 0%, #162035 100%);
   color: white;
   padding: 56px 24px 72px;
   overflow: hidden;
@@ -432,7 +462,7 @@ a {
 .hero-pattern {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
   background-size: 28px 28px;
   opacity: 0.7;
 }
@@ -451,15 +481,15 @@ a {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.1);
   color: #FFFFFF;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   padding: 6px 14px;
   border-radius: var(--radius-full);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 600;
   margin-bottom: 20px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(14px);
 }
 
 .hero-title {
@@ -492,14 +522,15 @@ a {
   flex-wrap: wrap;
 }
 
+/* Liquid Glass Hero Card */
 .hero-card {
   background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  padding: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  padding: 32px;
   border-radius: var(--radius-xl);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.3);
 }
 
 .hero-stats {
@@ -518,7 +549,7 @@ a {
 }
 
 .hero-stat-label {
-  font-size: 0.75rem;
+  font-size: 0.74rem;
   color: #94A3B8;
   font-weight: 600;
   text-transform: uppercase;
@@ -536,7 +567,7 @@ a {
 .container {
   max-width: 1240px;
   margin: 0 auto;
-  padding: 36px 24px;
+  padding: 40px 24px;
 }
 
 .section-header {
@@ -562,7 +593,7 @@ a {
 }
 
 /* ------------------------------------------------------------------------------
-   iOS Product Cards & Grid
+   Liquid Glass Product Cards & Grid (Minimalist & Less Icons)
    ------------------------------------------------------------------------------ */
 .products-grid {
   display: grid;
@@ -571,56 +602,63 @@ a {
 }
 
 .product-card {
-  background: var(--bg-surface);
+  background: var(--glass-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border-light);
+  border: 1px solid var(--glass-border);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   transition: var(--transition);
   position: relative;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--glass-shadow);
 }
 
 .product-card:hover {
   transform: translateY(-4px) scale(1.006);
-  box-shadow: var(--shadow-md);
-  border-color: rgba(0, 122, 255, 0.3);
+  background: var(--glass-surface-elevated);
+  box-shadow: var(--glass-shadow-hover);
+  border-color: rgba(255, 255, 255, 0.95);
 }
 
+/* Product Card Image Showcase */
 .card-image-box {
-  background: linear-gradient(180deg, #F8F9FA 0%, #E9ECEF 100%);
-  height: 190px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: #E8EBF0;
+  height: 210px;
   position: relative;
   overflow: hidden;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.card-icon-art {
-  font-size: 4.5rem;
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  user-select: none;
+.product-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.product-card:hover .card-icon-art {
-  transform: scale(1.14);
+.product-card:hover .product-card-img {
+  transform: scale(1.06);
 }
+
 
 .product-badge {
   position: absolute;
   top: 12px;
   left: 12px;
-  background: rgba(28, 28, 30, 0.88);
+  background: rgba(29, 29, 31, 0.82);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   color: white;
   font-size: 0.72rem;
-  font-weight: 700;
-  padding: 4px 10px;
+  font-weight: 600;
+  padding: 3px 10px;
   border-radius: var(--radius-full);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
+  z-index: 2;
 }
 
 .product-card-body {
@@ -631,7 +669,7 @@ a {
 }
 
 .product-category {
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 600;
   color: var(--ios-blue);
   text-transform: uppercase;
@@ -679,7 +717,7 @@ a {
   align-items: center;
   justify-content: space-between;
   padding-top: 14px;
-  border-top: 0.5px solid var(--border-light);
+  border-top: 0.5px solid rgba(0, 0, 0, 0.06);
   margin-top: auto;
 }
 
@@ -692,8 +730,8 @@ a {
 }
 
 .btn-add-cart {
-  background: var(--bg-inset);
-  color: var(--ios-blue);
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text-main);
   border: 1px solid transparent;
   padding: 7px 14px;
   border-radius: var(--radius-full);
@@ -716,7 +754,7 @@ a {
 }
 
 /* ------------------------------------------------------------------------------
-   iOS Segmented Control & Filter Bar
+   Liquid Glass Segmented Control & Filter Bar
    ------------------------------------------------------------------------------ */
 .filter-bar {
   display: flex;
@@ -725,47 +763,141 @@ a {
   flex-wrap: wrap;
   gap: 16px;
   margin-bottom: 28px;
-  background: var(--bg-surface);
-  padding: 12px 18px;
+  background: var(--glass-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  padding: 16px 20px;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-xs);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow-sm);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
 .category-pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  background: rgba(118, 118, 128, 0.08);
-  padding: 4px;
-  border-radius: var(--radius-full);
+  gap: 8px;
+  align-items: center;
 }
 
 .pill {
-  padding: 6px 14px;
+  padding: 8px 16px;
   border-radius: var(--radius-full);
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   font-weight: 600;
   color: var(--text-secondary);
-  border: none;
-  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   transition: var(--transition-fast);
   letter-spacing: -0.01em;
+  display: inline-flex;
+  align-items: center;
 }
 
 .pill:hover {
   color: var(--text-main);
-  background: rgba(255, 255, 255, 0.6);
+  background: #FFFFFF;
+  border-color: rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
 }
 
 .pill.active {
-  background: #FFFFFF;
-  color: var(--text-main);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  background: var(--text-main);
+  color: #FFFFFF;
+  border-color: var(--text-main);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14);
 }
 
 /* ------------------------------------------------------------------------------
-   iOS Alert Notifications
+   Category Showcase Gallery (Authentic Craft Photos from User Banner)
+   ------------------------------------------------------------------------------ */
+.categories-showcase-section {
+  margin-bottom: 44px;
+}
+
+.categories-showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 14px;
+}
+
+.category-showcase-card {
+  position: relative;
+  height: 110px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--glass-shadow-sm);
+  border: 1px solid var(--glass-border);
+  transition: var(--transition);
+  display: block;
+}
+
+.category-showcase-card:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: var(--glass-shadow);
+  border-color: rgba(255, 255, 255, 0.95);
+}
+
+.category-showcase-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.4s ease;
+  display: block;
+}
+
+.category-showcase-card:hover .category-showcase-img {
+  transform: scale(1.08);
+}
+
+.category-showcase-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.7) 100%);
+  display: flex;
+  align-items: flex-end;
+  padding: 10px 12px;
+}
+
+.category-showcase-title {
+  color: #FFFFFF;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  line-height: 1.25;
+}
+
+/* Thumbnail images for Cart and Checkout */
+.cart-item-thumb {
+  width: 54px;
+  height: 54px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  display: block;
+}
+
+.checkout-item-thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  border: 1px solid var(--glass-border);
+  display: block;
+}
+
+
+/* ------------------------------------------------------------------------------
+   Liquid Glass Alert Notifications
    ------------------------------------------------------------------------------ */
 .alert {
   padding: 14px 18px;
@@ -776,36 +908,37 @@ a {
   gap: 12px;
   font-weight: 500;
   font-size: 0.92rem;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid transparent;
-  backdrop-filter: blur(10px);
 }
 
 .alert-success {
-  background: var(--ios-green-light);
+  background: rgba(52, 199, 89, 0.12);
   color: #1B6E32;
   border-color: rgba(52, 199, 89, 0.25);
 }
 
 .alert-error {
-  background: var(--ios-red-light);
+  background: rgba(255, 59, 48, 0.12);
   color: #A3120B;
   border-color: rgba(255, 59, 48, 0.25);
 }
 
 .alert-info {
-  background: var(--ios-blue-light);
+  background: rgba(0, 122, 255, 0.12);
   color: #0056B3;
   border-color: rgba(0, 122, 255, 0.25);
 }
 
 .alert-warning {
-  background: var(--ios-orange-light);
+  background: rgba(255, 149, 0, 0.12);
   color: #945300;
   border-color: rgba(255, 149, 0, 0.25);
 }
 
 /* ------------------------------------------------------------------------------
-   Cart & Checkout Views (iOS Inset Grouped Style)
+   Liquid Glass Cart & Checkout Views
    ------------------------------------------------------------------------------ */
 .cart-layout {
   display: grid;
@@ -818,28 +951,30 @@ a {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  background: var(--bg-surface);
+  background: var(--glass-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border-light);
+  border: 1px solid var(--glass-border);
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--glass-shadow);
 }
 
 .cart-table th {
-  background: var(--bg-subtle);
+  background: rgba(0, 0, 0, 0.02);
   padding: 14px 18px;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--text-muted);
   text-align: left;
-  border-bottom: 0.5px solid var(--border-light);
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.06);
 }
 
 .cart-table td {
   padding: 16px 18px;
-  border-bottom: 0.5px solid var(--border-light);
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.06);
   vertical-align: middle;
 }
 
@@ -849,24 +984,28 @@ a {
   gap: 14px;
 }
 
-.cart-item-icon {
-  font-size: 2rem;
-  background: var(--bg-subtle);
-  width: 52px;
-  height: 52px;
+.cart-item-mark {
+  width: 44px;
+  height: 44px;
   border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.04);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 0.5px solid var(--border-light);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  border: 1px solid var(--glass-border);
 }
 
 .cart-summary-box {
-  background: var(--bg-surface);
+  background: var(--glass-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border-light);
+  border: 1px solid var(--glass-border);
   padding: 28px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--glass-shadow);
 }
 
 .summary-row {
@@ -881,13 +1020,78 @@ a {
   font-size: 1.3rem;
   font-weight: 800;
   color: var(--text-main);
-  border-top: 1px solid var(--border-light);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
   padding-top: 16px;
   margin-top: 8px;
 }
 
+.btn-remove-item {
+  color: var(--ios-red);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 59, 48, 0.08);
+  border: 1px solid rgba(255, 59, 48, 0.18);
+  transition: var(--transition-fast);
+  display: inline-block;
+  cursor: pointer;
+}
+
+.btn-remove-item:hover {
+  background: var(--ios-red);
+  color: #FFFFFF;
+}
+
+.cart-empty-card {
+  text-align: center;
+  padding: 70px 24px;
+  background: var(--glass-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+.cart-empty-mark {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-full);
+  background: var(--glass-surface-elevated);
+  border: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  box-shadow: var(--glass-shadow-sm);
+}
+
+.glass-panel {
+  background: var(--glass-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+.glass-panel-elevated {
+  background: var(--glass-surface-elevated);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow-hover);
+}
+
+
 /* ------------------------------------------------------------------------------
-   iOS Form Controls
+   Liquid Glass Form Controls
    ------------------------------------------------------------------------------ */
 .form-group {
   margin-bottom: 18px;
@@ -907,28 +1111,32 @@ a {
   padding: 11px 14px;
   font-family: inherit;
   font-size: 0.92rem;
-  border: 1px solid rgba(60, 60, 67, 0.16);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: var(--radius-sm);
-  background: #FFFFFF;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
   color: var(--text-main);
   transition: var(--transition-fast);
 }
 
 .form-input:focus, .form-select:focus, .form-textarea:focus {
   outline: none;
+  background: #FFFFFF;
   border-color: var(--ios-blue);
   box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.16);
 }
 
 /* ------------------------------------------------------------------------------
-   Admin Panne Dashboard (Apple Settings / Control Center Aesthetic)
+   Liquid Glass Admin Panne Dashboard
    ------------------------------------------------------------------------------ */
 .admin-card {
-  background: var(--bg-surface);
+  background: var(--glass-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border-light);
+  border: 1px solid var(--glass-border);
   padding: 28px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--glass-shadow);
   margin-bottom: 24px;
 }
 
@@ -936,10 +1144,10 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--bg-subtle);
+  background: rgba(255, 255, 255, 0.5);
   padding: 22px;
   border-radius: var(--radius-md);
-  border: 1px solid var(--border-light);
+  border: 1px solid var(--glass-border);
   margin: 20px 0;
   gap: 20px;
 }
@@ -947,7 +1155,7 @@ a {
 .panne-toggle-btn {
   font-size: 0.95rem;
   font-weight: 700;
-  padding: 14px 26px;
+  padding: 13px 26px;
   border-radius: var(--radius-full);
   border: none;
   cursor: pointer;
@@ -980,14 +1188,16 @@ a {
 }
 
 /* ------------------------------------------------------------------------------
-   iOS Error Screens (404, 500, 503)
+   Liquid Glass Error Screens (404, 500, 503)
    ------------------------------------------------------------------------------ */
 .ios-error-card {
-  background: var(--bg-surface);
+  background: var(--glass-surface-elevated);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
   border-radius: var(--radius-xl);
-  border: 1px solid var(--border-light);
+  border: 1px solid var(--glass-border);
   padding: 48px 36px;
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--glass-shadow-hover);
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -1005,23 +1215,28 @@ a {
   background: linear-gradient(90deg, #FF3B30, #FF9500, #FF3B30);
 }
 
-.ios-error-icon {
-  width: 76px;
-  height: 76px;
+.ios-error-mark {
+  width: 64px;
+  height: 64px;
   border-radius: var(--radius-full);
+  background: var(--glass-surface);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow-sm);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 20px;
-  font-size: 2.4rem;
-  box-shadow: var(--shadow-sm);
+  margin: 0 auto 18px;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text-main);
 }
 
 .ios-badge-code {
   display: inline-block;
   padding: 4px 14px;
   border-radius: var(--radius-full);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.05em;
   margin-bottom: 14px;
@@ -1029,13 +1244,13 @@ a {
 }
 
 .ios-inset-box {
-  background: var(--bg-subtle);
+  background: rgba(0, 0, 0, 0.03);
   border-radius: var(--radius-md);
   padding: 18px 20px;
   text-align: left;
   font-size: 0.86rem;
   margin: 24px 0 28px;
-  border: 1px solid var(--border-light);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .ios-inset-row {
@@ -1043,7 +1258,7 @@ a {
   justify-content: space-between;
   align-items: center;
   padding: 8px 0;
-  border-bottom: 0.5px solid var(--border-light);
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.05);
 }
 
 .ios-inset-row:last-child {
@@ -1056,10 +1271,10 @@ a {
    ------------------------------------------------------------------------------ */
 .site-footer {
   margin-top: auto;
-  background: #1C1C1E;
+  background: #11141A;
   color: #8E8E93;
   padding: 48px 24px 24px;
-  border-top: 0.5px solid rgba(255, 255, 255, 0.1);
+  border-top: 0.5px solid rgba(255, 255, 255, 0.08);
 }
 
 .footer-container {
@@ -1105,14 +1320,55 @@ a {
   max-width: 1240px;
   margin: 0 auto;
   padding-top: 20px;
-  border-top: 0.5px solid rgba(255, 255, 255, 0.08);
+  border-top: 0.5px solid rgba(255, 255, 255, 0.06);
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 0.82rem;
 }
 
+/* Product Detail Showcase Layout */
+.product-detail-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 44px;
+  background: var(--glass-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  padding: 40px;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  margin-bottom: 48px;
+  align-items: center;
+}
+
+.product-detail-image-box {
+  width: 100%;
+  height: 440px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.12);
+  border: 1px solid var(--glass-border);
+  background: #E8EBF0;
+}
+
+.product-detail-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
 /* Responsive */
+@media (max-width: 992px) {
+  .categories-showcase-grid { grid-template-columns: repeat(3, 1fr); }
+  .product-detail-layout { grid-template-columns: 1fr; padding: 24px; gap: 28px; }
+  .product-detail-image-box { height: 340px; }
+}
+
 @media (max-width: 900px) {
   .hero-container {
     grid-template-columns: 1fr;
@@ -1126,8 +1382,11 @@ a {
 }
 
 @media (max-width: 600px) {
+  .categories-showcase-grid { grid-template-columns: repeat(2, 1fr); }
   .footer-container { grid-template-columns: 1fr; }
   .hero-title { font-size: 2.2rem; }
   .navbar-container { padding: 10px 16px; }
   .panne-switch-container { flex-direction: column; align-items: stretch; text-align: center; }
+  .products-grid { grid-template-columns: 1fr; }
 }
+

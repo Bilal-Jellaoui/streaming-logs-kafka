@@ -17,18 +17,18 @@
         <!-- Top status bar with Panne state & live indicator -->
         <div class="top-announcement">
             <div class="announcement-left">
-                <span>✨ Livraison offerte au Maroc dès 300 DH d'achat</span>
+                <span>Livraison offerte au Maroc dès 300 DH d'achat</span>
                 <span>•</span>
                 <span th:if="${isPanneActive}" class="panne-status-badge panne">
-                    🔴 Mode Panne Actif (Paiement 503)
+                    <span class="status-dot"></span> Mode Panne Actif (503)
                 </span>
                 <span th:unless="${isPanneActive}" class="panne-status-badge normal">
-                    🟢 Passerelle CMI Opérationnelle (200)
+                    <span class="status-dot"></span> Passerelle CMI Opérationnelle (200)
                 </span>
             </div>
             <div class="announcement-right">
                 <a th:href="@{/admin}" class="btn-admin">
-                    ⚙️ Panneau Admin Mode Panne (/admin)
+                    Mode Panne (/admin)
                 </a>
             </div>
         </div>
@@ -36,15 +36,20 @@
         <!-- Main Navigation Bar -->
         <div class="navbar-container">
             <a th:href="@{/}" class="logo-wrapper">
-                <div class="logo-icon">🛍️</div>
+                <div class="logo-icon">S</div>
                 <div class="logo-text">Souk<span>Line</span></div>
             </a>
 
             <!-- Search Form -->
             <div class="search-bar">
                 <form th:action="@{/recherche}" method="get" class="search-form">
-                    <input type="text" name="q" placeholder="Rechercher (tapis, argan, tajine...)" th:value="${query}" required>
-                    <button type="submit" class="search-btn" title="Rechercher">🔍</button>
+                    <input type="text" name="q" placeholder="Rechercher tapis, argan, tajine..." th:value="${query}" required>
+                    <button type="submit" class="search-btn" title="Rechercher" aria-label="Rechercher">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <circle cx="11" cy="11" r="7"></circle>
+                            <line x1="16.5" y1="16.5" x2="21" y2="21"></line>
+                        </svg>
+                    </button>
                 </form>
             </div>
 
@@ -62,11 +67,11 @@
                     <a th:href="@{/logout}" style="font-size: 0.8rem; color: var(--ios-red); margin-left: 6px;">(Déconnexion)</a>
                 </div>
                 <div th:unless="${currentUser != null}">
-                    <a th:href="@{/login}" class="btn btn-secondary btn-sm">Se connecter</a>
+                    <a th:href="@{/login}" class="btn btn-secondary btn-sm">Connexion</a>
                 </div>
 
                 <a th:href="@{/panier}" class="btn-icon btn-cart">
-                    <span>🛒 Panier</span>
+                    <span>Panier</span>
                     <span class="badge-count" th:text="${cartItemCount}">0</span>
                 </a>
             </div>
@@ -117,7 +122,7 @@
         </div>
 
         <div class="footer-bottom">
-            <span>© 2026 SoukLine Inc. — Tous droits réservés. Thème Moderne iOS.</span>
+            <span>© 2026 SoukLine Inc. — Tous droits réservés. Liquid Glass iOS Theme.</span>
             <span>Serveur Tomcat Embarqué Spring Boot (Port 8080)</span>
         </div>
 
