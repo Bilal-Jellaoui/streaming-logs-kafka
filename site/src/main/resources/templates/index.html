@@ -12,7 +12,7 @@
         <div class="hero-container">
             <div>
                 <div class="hero-tag">
-                    <span>🇲🇦 Trésors & Artisanat du Maroc</span>
+                    <span>Maison d'Artisanat d'Exception</span>
                 </div>
                 <h1 class="hero-title">
                     L'Art de Vivre Marocain, <span>Directement chez Vous</span>
@@ -41,8 +41,8 @@
                         <div class="hero-stat-label">Satisfaction</div>
                     </div>
                 </div>
-                <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem; color: #CBD5E1;">
-                    <p>⚡ <strong>Prêt pour JMeter :</strong> Chaque visite génère une ligne réelle dans <code>logs/access.log</code>.</p>
+                <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.12); font-size: 0.84rem; color: #94A3B8;">
+                    <p><strong>Architecture Temps Réel :</strong> Chaque visite génère une ligne Tomcat réelle dans <code>logs/access.log</code>.</p>
                 </div>
             </div>
         </div>
@@ -57,17 +57,57 @@
             <div th:if="${infoMessage}" class="alert alert-info" th:text="${infoMessage}"></div>
             <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
 
-            <!-- Categories Bar -->
-            <div style="margin-bottom: 40px;">
+            <!-- Categories Showcase Gallery (Authentic Craft Photos) -->
+            <div class="categories-showcase-section">
                 <div class="section-header">
                     <div>
-                        <h2 class="section-title">Catégories d'Exception</h2>
-                        <p class="section-subtitle">Naviguez à travers nos collections artisanales phares</p>
+                        <h2 class="section-title">Nos Catégories</h2>
+                        <p class="section-subtitle">Découvrez l'authenticité de nos collections artisanales faites main</p>
                     </div>
-                    <a th:href="@{/produits}" style="color: var(--color-primary); font-weight: 600;">Tout voir →</a>
+                    <a th:href="@{/produits}" style="color: var(--ios-blue); font-weight: 600; font-size: 0.9rem;">Explorer tout →</a>
                 </div>
 
-                <div class="category-pills">
+                <div class="categories-showcase-grid">
+                    <a th:href="@{/produits(categorie='Textile & Tapis')}" class="category-showcase-card">
+                        <img th:src="@{/images/cat-tapis.jpg}" alt="Tapis Berbères" class="category-showcase-img">
+                        <div class="category-showcase-overlay">
+                            <span class="category-showcase-title">Tapis Berbères</span>
+                        </div>
+                    </a>
+                    <a th:href="@{/produits(categorie='Art de la Table')}" class="category-showcase-card">
+                        <img th:src="@{/images/cat-poterie.jpg}" alt="Poterie & Céramique" class="category-showcase-img">
+                        <div class="category-showcase-overlay">
+                            <span class="category-showcase-title">Poterie & Céramique</span>
+                        </div>
+                    </a>
+                    <a th:href="@{/produits(categorie='Mode & Maroquinerie')}" class="category-showcase-card">
+                        <img th:src="@{/images/cat-maroquinerie.jpg}" alt="Maroquinerie" class="category-showcase-img">
+                        <div class="category-showcase-overlay">
+                            <span class="category-showcase-title">Maroquinerie Cuir</span>
+                        </div>
+                    </a>
+                    <a th:href="@{/produits(categorie='Art de la Table')}" class="category-showcase-card">
+                        <img th:src="@{/images/cat-bijoux.jpg}" alt="Bijoux & Métal" class="category-showcase-img">
+                        <div class="category-showcase-overlay">
+                            <span class="category-showcase-title">Bijoux & Métal</span>
+                        </div>
+                    </a>
+                    <a th:href="@{/produits(categorie='Décoration & Mobilier')}" class="category-showcase-card">
+                        <img th:src="@{/images/cat-decoration.jpg}" alt="Décoration Bois" class="category-showcase-img">
+                        <div class="category-showcase-overlay">
+                            <span class="category-showcase-title">Décoration & Bois</span>
+                        </div>
+                    </a>
+                    <a th:href="@{/produits(categorie='Textile & Tapis')}" class="category-showcase-card">
+                        <img th:src="@{/images/cat-textile.jpg}" alt="Textiles & Tissus" class="category-showcase-img">
+                        <div class="category-showcase-overlay">
+                            <span class="category-showcase-title">Textiles & Soie</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Capsule Pills Navigation -->
+                <div class="category-pills" style="margin-top: 16px;">
                     <a th:href="@{/produits}" class="pill active">Toutes les collections</a>
                     <a th:each="cat : ${categories}" th:href="@{/produits(categorie=${cat})}" class="pill" th:text="${cat}"></a>
                 </div>
@@ -77,8 +117,8 @@
             <div>
                 <div class="section-header">
                     <div>
-                        <h2 class="section-title">Coups de Cœur & Best-Sellers</h2>
-                        <p class="section-subtitle">Les pièces les plus plébiscitées de notre communauté</p>
+                        <h2 class="section-title">Sélection Exclusive</h2>
+                        <p class="section-subtitle">Les pièces les plus plébiscitées de nos maîtres artisans</p>
                     </div>
                 </div>
 
@@ -86,7 +126,7 @@
                     <div th:each="p : ${featuredProducts}" class="product-card">
                         <div class="card-image-box">
                             <span class="product-badge" th:text="${p.badge}">Best-seller</span>
-                            <div class="card-icon-art" th:text="${p.icon}">✨</div>
+                            <img th:src="@{${p.imageUrl}}" th:alt="${p.name}" class="product-card-img" loading="lazy">
                         </div>
 
                         <div class="product-card-body">
@@ -105,7 +145,7 @@
                             <div class="product-card-footer">
                                 <div class="product-price" th:text="${p.formattedPrice}">190.00 DH</div>
                                 <button type="button" class="btn-add-cart btn-quick-add" th:attr="data-product-id=${p.id}">
-                                    <span>+ Panier</span>
+                                    <span>Ajouter</span>
                                 </button>
                             </div>
                         </div>

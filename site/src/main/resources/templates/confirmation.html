@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: header-head('Commande Confirmée !')}"></head>
+<head th:replace="~{fragments/layout :: header-head('Commande Confirmée')}"></head>
 <body>
 
     <!-- Header -->
@@ -9,51 +9,53 @@
     <main class="main-content">
         <div class="container" style="max-width: 680px; padding: 60px 20px;">
 
-            <div style="background: var(--bg-surface); border-radius: var(--radius-lg); border: 1px solid var(--border-light); padding: 48px; box-shadow: var(--shadow-md); text-align: center;">
+            <div class="glass-panel-elevated" style="padding: 48px; text-align: center;">
 
-                <div style="width: 72px; height: 72px; background: #D1FAE5; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 2.2rem; color: #065F46;">
-                    ✓
+                <div style="width: 68px; height: 68px; background: rgba(52, 199, 89, 0.14); border: 1px solid rgba(52, 199, 89, 0.35); border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 8px 24px rgba(52, 199, 89, 0.2);">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#248A3D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
                 </div>
 
-                <h1 style="font-family: var(--font-serif); font-size: 2.2rem; color: var(--color-indigo); margin-bottom: 10px;">
-                    Merci pour votre commande !
+                <h1 style="font-family: var(--font-display); font-size: 2rem; font-weight: 800; color: var(--text-main); margin-bottom: 10px; letter-spacing: -0.02em;">
+                    Merci pour votre commande
                 </h1>
 
-                <p style="color: var(--text-muted); font-size: 1rem; margin-bottom: 28px;">
-                    Votre paiement a été validé avec succès. Un email de confirmation a été envoyé à <strong th:text="${order.customerEmail}"></strong>.
+                <p style="color: var(--text-muted); font-size: 0.96rem; margin-bottom: 30px;">
+                    Votre paiement a été validé. Un récapitulatif a été envoyé à <strong th:text="${order.customerEmail}"></strong>.
                 </p>
 
-                <!-- Order Receipt Box -->
-                <div style="background: var(--bg-subtle); border: 1.5px dashed var(--border-light); border-radius: var(--radius-md); padding: 24px; text-align: left; margin-bottom: 32px;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.95rem;">
+                <!-- Order Receipt Inset Box -->
+                <div style="background: rgba(0, 0, 0, 0.02); border: 1px solid rgba(0, 0, 0, 0.06); border-radius: var(--radius-md); padding: 24px; text-align: left; margin-bottom: 32px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.92rem;">
                         <span style="color: var(--text-muted);">Numéro de commande :</span>
-                        <strong style="color: var(--color-indigo);" th:text="${order.orderId}">SL-94821</strong>
+                        <strong style="color: var(--text-main); font-family: monospace;" th:text="${order.orderId}">SL-94821</strong>
                     </div>
 
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.95rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.92rem;">
                         <span style="color: var(--text-muted);">Date & Heure :</span>
                         <span th:text="${order.formattedDate}">14/10/2026 10:30</span>
                     </div>
 
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.95rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.92rem;">
                         <span style="color: var(--text-muted);">Mode de règlement :</span>
-                        <span>Carte Bancaire CMI (Validé)</span>
+                        <span>Passerelle CMI (Approuvé)</span>
                     </div>
 
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.95rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.92rem;">
                         <span style="color: var(--text-muted);">Adresse de livraison :</span>
                         <span th:text="${order.address} + ', ' + ${order.city}">Casablanca</span>
                     </div>
 
-                    <div style="display: flex; justify-content: space-between; padding-top: 12px; border-top: 1px solid var(--border-light); font-size: 1.15rem; font-weight: 800; color: var(--color-indigo);">
-                        <span>Montant total prélevé :</span>
+                    <div style="display: flex; justify-content: space-between; padding-top: 14px; border-top: 0.5px solid rgba(0, 0, 0, 0.08); font-size: 1.15rem; font-weight: 800; color: var(--text-main);">
+                        <span>Montant total réglé :</span>
                         <span th:text="${order.formattedTotal}">470.00 DH</span>
                     </div>
                 </div>
 
-                <div style="display: flex; gap: 16px; justify-content: center;">
-                    <a th:href="@{/}" class="btn btn-primary">Retour à l'accueil</a>
-                    <a th:href="@{/produits}" class="btn btn-secondary">Découvrir d'autres trésors</a>
+                <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+                    <a th:href="@{/}" class="btn btn-primary" style="padding: 12px 28px;">Retour à l'accueil</a>
+                    <a th:href="@{/produits}" class="btn btn-secondary" style="padding: 12px 24px;">Explorer le Catalogue</a>
                 </div>
 
             </div>

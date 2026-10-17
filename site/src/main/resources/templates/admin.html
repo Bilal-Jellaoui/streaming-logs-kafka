@@ -14,7 +14,7 @@
                 <p class="section-subtitle">Gestion du comportement du serveur Tomcat pour la démonstration du traitement en streaming et alertes</p>
             </div>
 
-            <!-- Main Panne Control Card -->
+            <!-- Main Panne Control Card (Liquid Glass) -->
             <div class="admin-card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
                     <div>
@@ -27,10 +27,10 @@
                     </div>
 
                     <span th:if="${panneActive}" class="panne-status-badge panne" style="font-size: 0.88rem; padding: 6px 16px;">
-                        🔴 MODE PANNE ACTIF (503)
+                        <span class="status-dot"></span> Mode Panne Actif (503)
                     </span>
                     <span th:unless="${panneActive}" class="panne-status-badge normal" style="font-size: 0.88rem; padding: 6px 16px;">
-                        🟢 FONCTIONNEMENT NORMAL (200)
+                        <span class="status-dot"></span> Fonctionnement Normal (200)
                     </span>
                 </div>
 
@@ -47,37 +47,37 @@
 
                     <div>
                         <a th:if="${panneActive}" th:href="@{/admin/panne(etat='off')}" class="panne-toggle-btn btn-deactivate">
-                            ✔ Désactiver la Panne (Retour à 200)
+                            Désactiver le Mode Panne (HTTP 200)
                         </a>
                         <a th:unless="${panneActive}" th:href="@{/admin/panne(etat='on')}" class="panne-toggle-btn btn-activate">
-                            ⚡ ACTIVER LA PANNE (Simuler 503)
+                            Activer le Mode Panne (HTTP 503)
                         </a>
                     </div>
                 </div>
 
                 <!-- Stats Grid (iOS Widget Style) -->
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 24px;">
-                    <div style="background: var(--bg-subtle); padding: 18px; border-radius: var(--radius-md); text-align: center; border: 1px solid var(--border-light);">
+                    <div style="background: rgba(0,0,0,0.02); padding: 18px; border-radius: var(--radius-md); text-align: center; border: 1px solid rgba(0,0,0,0.06);">
                         <div style="font-size: 2rem; font-weight: 800; color: var(--ios-red); font-family: var(--font-display);" th:text="${triggerCount}">0</div>
-                        <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.04em; margin-top: 2px;">Erreurs 503 déclenchées</div>
+                        <div style="font-size: 0.74rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.04em; margin-top: 2px;">Erreurs 503 déclenchées</div>
                     </div>
 
-                    <div style="background: var(--bg-subtle); padding: 18px; border-radius: var(--radius-md); text-align: center; border: 1px solid var(--border-light);">
+                    <div style="background: rgba(0,0,0,0.02); padding: 18px; border-radius: var(--radius-md); text-align: center; border: 1px solid rgba(0,0,0,0.06);">
                         <div style="font-size: 2rem; font-weight: 800; color: var(--text-main); font-family: var(--font-display);" th:text="${productsCount}">10</div>
-                        <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.04em; margin-top: 2px;">Articles en mémoire</div>
+                        <div style="font-size: 0.74rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.04em; margin-top: 2px;">Articles en catalogue</div>
                     </div>
 
-                    <div style="background: var(--bg-subtle); padding: 18px; border-radius: var(--radius-md); text-align: center; border: 1px solid var(--border-light);">
+                    <div style="background: rgba(0,0,0,0.02); padding: 18px; border-radius: var(--radius-md); text-align: center; border: 1px solid rgba(0,0,0,0.06);">
                         <div style="font-size: 2rem; font-weight: 800; color: var(--ios-green); font-family: var(--font-display);">8080</div>
-                        <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.04em; margin-top: 2px;">Port Tomcat Embarqué</div>
+                        <div style="font-size: 0.74rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.04em; margin-top: 2px;">Port Tomcat Embarqué</div>
                     </div>
                 </div>
             </div>
 
             <!-- Testing & Integration Section for Teammates -->
             <div class="admin-card">
-                <h3 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin-bottom: 12px; color: var(--text-main);">
-                    📋 Commandes d'Intégration pour l'Équipe
+                <h3 style="font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; margin-bottom: 12px; color: var(--text-main);">
+                    Commandes d'Intégration & Tests
                 </h3>
 
                 <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 20px;">
@@ -106,12 +106,12 @@
                     </div>
                 </div>
 
-                <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border-light); display: flex; gap: 14px; flex-wrap: wrap;">
+                <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(0, 0, 0, 0.06); display: flex; gap: 14px; flex-wrap: wrap;">
                     <a th:href="@{/checkout}" class="btn btn-secondary btn-sm" target="_blank">
-                        Tester /checkout dans un onglet ↗
+                        Tester /checkout
                     </a>
                     <a th:href="@{/nimporte-quoi}" class="btn btn-secondary btn-sm" target="_blank">
-                        Tester /nimporte-quoi (404) ↗
+                        Tester /nimporte-quoi (404)
                     </a>
                     <a th:href="@{/}" class="btn btn-secondary btn-sm">
                         Retour au Site

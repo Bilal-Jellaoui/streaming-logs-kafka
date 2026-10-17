@@ -7,14 +7,14 @@
     <div th:replace="~{fragments/layout :: site-header}"></div>
 
     <main class="main-content">
-        <div class="container" style="max-width: 500px; padding: 60px 20px;">
+        <div class="container" style="max-width: 480px; padding: 60px 20px;">
 
-            <div style="background: var(--bg-surface); border-radius: var(--radius-lg); border: 1px solid var(--border-light); padding: 40px; box-shadow: var(--shadow-md);">
+            <div class="glass-panel" style="padding: 40px;">
 
                 <div style="text-align: center; margin-bottom: 28px;">
-                    <div style="font-size: 2.8rem; margin-bottom: 8px;">✨</div>
-                    <h1 style="font-family: var(--font-serif); font-size: 1.8rem; color: var(--color-indigo);">Espace Client SoukLine</h1>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">Connectez-vous pour suivre vos commandes</p>
+                    <div class="logo-icon" style="margin: 0 auto 16px; width: 48px; height: 48px; font-size: 1.3rem;">S</div>
+                    <h1 style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.02em;">Espace Client SoukLine</h1>
+                    <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 4px;">Connectez-vous pour gérer vos commandes</p>
                 </div>
 
                 <!-- Flash alerts -->
@@ -27,7 +27,7 @@
 
                     <div class="form-group">
                         <label for="email-input" class="form-label">Adresse Email :</label>
-                        <input id="email-input" type="email" name="email" class="form-input" placeholder="ex: amine@soukline.ma" value="client@soukline.ma" required>
+                        <input id="email-input" type="email" name="email" class="form-input" placeholder="ex: client@soukline.ma" value="client@soukline.ma" required>
                     </div>
 
                     <div class="form-group">
@@ -35,14 +35,14 @@
                         <input id="password-input" type="password" name="password" class="form-input" placeholder="••••••••" value="demo123">
                     </div>
 
-                    <div style="margin-bottom: 24px;">
-                        <button type="submit" class="btn btn-primary btn-block">Se Connecter</button>
+                    <div style="margin-bottom: 24px; margin-top: 24px;">
+                        <button type="submit" class="btn btn-primary btn-block" style="padding: 13px;">Se Connecter</button>
                     </div>
                 </form>
 
                 <!-- Demo quick account hints -->
-                <div style="background: var(--bg-subtle); padding: 14px; border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--text-muted);">
-                    <strong>💡 Comptes démo en mémoire :</strong><br>
+                <div style="background: rgba(0, 0, 0, 0.02); padding: 14px 16px; border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--text-muted); border: 1px solid rgba(0,0,0,0.06);">
+                    <strong style="color: var(--text-main);">Comptes pré-configurés :</strong><br>
                     • Client : <code>client@soukline.ma</code><br>
                     • Administrateur : <code>admin@soukline.ma</code>
                 </div>

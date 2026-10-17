@@ -7,7 +7,7 @@
     <div th:replace="~{fragments/layout :: site-header}"></div>
 
     <main class="main-content">
-        <div class="container" style="max-width: 960px;">
+        <div class="container" style="max-width: 980px;">
 
             <div style="margin-bottom: 32px;">
                 <h1 class="section-title">Validation de votre Commande</h1>
@@ -16,14 +16,14 @@
 
             <!-- Mode Panne Notice if active -->
             <div th:if="${isPanneActive}" class="alert alert-error">
-                🚨 <strong>Avertissement Mode Panne :</strong> Le mode panne est actuellement simulé. La tentative de paiement va échouer avec un statut HTTP 503.
+                <strong>Mode Panne Actif :</strong> La simulation du mode panne est activée. La tentative de paiement va renvoyer un statut HTTP 503.
             </div>
 
-            <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 36px; align-items: flex-start;">
+            <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 32px; align-items: flex-start;">
 
-                <!-- Checkout Form -->
-                <div style="background: var(--bg-surface); border-radius: var(--radius-md); border: 1px solid var(--border-light); padding: 32px; box-shadow: var(--shadow-sm);">
-                    <h2 style="font-family: var(--font-serif); font-size: 1.3rem; margin-bottom: 24px; color: var(--color-indigo);">
+                <!-- Checkout Form (Liquid Glass Card) -->
+                <div class="glass-panel" style="padding: 32px;">
+                    <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin-bottom: 24px; color: var(--text-main);">
                         1. Adresse de Livraison
                     </h2>
 
@@ -55,11 +55,11 @@
                             </select>
                         </div>
 
-                        <h2 style="font-family: var(--font-serif); font-size: 1.3rem; margin: 32px 0 20px; color: var(--color-indigo);">
+                        <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin: 32px 0 20px; color: var(--text-main);">
                             2. Paiement Sécurisé CMI
                         </h2>
 
-                        <div style="background: var(--bg-subtle); padding: 18px; border-radius: var(--radius-sm); border: 1.5px solid var(--border-light); margin-bottom: 24px;">
+                        <div style="background: rgba(0, 0, 0, 0.02); padding: 20px; border-radius: var(--radius-md); border: 1px solid rgba(0, 0, 0, 0.06); margin-bottom: 24px;">
                             <div class="form-group" style="margin-bottom: 12px;">
                                 <label for="carte-input" class="form-label">Numéro de carte bancaire :</label>
                                 <input id="carte-input" type="text" name="carte" class="form-input" placeholder="4000 1234 5678 9010" value="4000 1234 5678 9010" required>
@@ -76,28 +76,28 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary btn-block" style="padding: 16px; font-size: 1.05rem;">
-                            💳 Confirmer et Payer <span th:text="${cart.formattedTotal}"></span>
+                        <button type="submit" class="btn btn-primary btn-block" style="padding: 15px; font-size: 1rem;">
+                            Confirmer et Payer (<span th:text="${cart.formattedTotal}"></span>)
                         </button>
                     </form>
                 </div>
 
                 <!-- Right: Summary Box -->
                 <div class="cart-summary-box">
-                    <h3 style="font-family: var(--font-serif); font-size: 1.2rem; margin-bottom: 18px; color: var(--color-indigo);">
+                    <h3 style="font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; margin-bottom: 18px; color: var(--text-main);">
                         Articles Commandés (<span th:text="${cart.totalItemsCount}"></span>)
                     </h3>
 
                     <div style="max-height: 260px; overflow-y: auto; margin-bottom: 20px;">
-                        <div th:each="item : ${cart.items}" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border-light);">
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <span style="font-size: 1.4rem;" th:text="${item.product.icon}">✨</span>
+                        <div th:each="item : ${cart.items}" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 0.5px solid rgba(0, 0, 0, 0.06);">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <img th:src="@{${item.product.imageUrl}}" th:alt="${item.product.name}" class="checkout-item-thumb">
                                 <div>
-                                    <div style="font-size: 0.85rem; font-weight: 600;" th:text="${item.product.name}">Nom</div>
-                                    <div style="font-size: 0.75rem; color: var(--text-muted);" th:text="'Qté: ' + ${item.quantity}">Qté: 1</div>
+                                    <div style="font-size: 0.86rem; font-weight: 600; color: var(--text-main);" th:text="${item.product.name}">Nom</div>
+                                    <div style="font-size: 0.74rem; color: var(--text-muted);" th:text="'Qté: ' + ${item.quantity}">Qté: 1</div>
                                 </div>
                             </div>
-                            <span style="font-size: 0.85rem; font-weight: 700;" th:text="${item.formattedTotalPrice}">190 DH</span>
+                            <span style="font-size: 0.86rem; font-weight: 700; color: var(--text-main);" th:text="${item.formattedTotalPrice}">190 DH</span>
                         </div>
                     </div>
 

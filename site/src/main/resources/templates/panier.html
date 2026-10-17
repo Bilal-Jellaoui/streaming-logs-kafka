@@ -11,7 +11,7 @@
 
             <div style="margin-bottom: 32px;">
                 <h1 class="section-title">Mon Panier d'Achats</h1>
-                <p class="section-subtitle">Vérifiez vos articles avant de procéder au paiement sécurisé</p>
+                <p class="section-subtitle">Vérifiez vos articles avant de procéder au règlement</p>
             </div>
 
             <!-- Flash alerts -->
@@ -38,9 +38,9 @@
                             <tr th:each="item : ${cart.items}">
                                 <td>
                                     <div class="cart-item-info">
-                                        <div class="cart-item-icon" th:text="${item.product.icon}">✨</div>
+                                        <img th:src="@{${item.product.imageUrl}}" th:alt="${item.product.name}" class="cart-item-thumb">
                                         <div>
-                                            <a th:href="@{/produits/{id}(id=${item.product.id})}" style="font-weight: 700; color: var(--color-indigo);" th:text="${item.product.name}">Nom Produit</a>
+                                            <a th:href="@{/produits/{id}(id=${item.product.id})}" style="font-weight: 700; color: var(--text-main);" th:text="${item.product.name}">Nom Produit</a>
                                             <div style="font-size: 0.8rem; color: var(--text-muted);" th:text="${item.product.category}">Catégorie</div>
                                         </div>
                                     </div>
@@ -49,21 +49,21 @@
                                 <td>
                                     <form th:action="@{/panier/modifier}" method="post" style="display: flex; align-items: center; gap: 6px;">
                                         <input type="hidden" name="productId" th:value="${item.product.id}">
-                                        <input type="number" name="quantity" th:value="${item.quantity}" min="1" max="20" style="width: 55px; padding: 6px; border: 1px solid var(--border-light); border-radius: var(--radius-sm); text-align: center;" onchange="this.form.submit()">
+                                        <input type="number" name="quantity" th:value="${item.quantity}" min="1" max="20" style="width: 55px; padding: 6px; border: 1px solid rgba(0,0,0,0.1); border-radius: var(--radius-sm); text-align: center; background: rgba(255,255,255,0.85); font-weight: 600;" onchange="this.form.submit()">
                                     </form>
                                 </td>
-                                <td style="font-weight: 700; color: var(--color-terracotta);" th:text="${item.formattedTotalPrice}">380.00 DH</td>
+                                <td style="font-weight: 700; color: var(--text-main);" th:text="${item.formattedTotalPrice}">380.00 DH</td>
                                 <td>
-                                    <a th:href="@{/panier/supprimer/{id}(id=${item.product.id})}" style="color: var(--danger); font-size: 1.1rem;" title="Supprimer cet article">🗑️</a>
+                                    <a th:href="@{/panier/supprimer/{id}(id=${item.product.id})}" class="btn-remove-item" title="Supprimer cet article">Supprimer</a>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
 
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
-                        <a th:href="@{/produits}" class="btn btn-secondary btn-sm">← Continuer mes achats</a>
+                        <a th:href="@{/produits}" class="btn btn-secondary btn-sm">Continuer mes achats</a>
                         <form th:action="@{/panier/vider}" method="post">
-                            <button type="submit" class="btn btn-secondary btn-sm" style="color: var(--danger); border-color: rgba(239, 68, 68, 0.3);">
+                            <button type="submit" class="btn btn-secondary btn-sm" style="color: var(--ios-red); border-color: rgba(255, 59, 48, 0.25);">
                                 Vider le panier
                             </button>
                         </form>
@@ -72,7 +72,7 @@
 
                 <!-- Right: Summary Box -->
                 <div class="cart-summary-box">
-                    <h3 style="font-family: var(--font-serif); font-size: 1.3rem; margin-bottom: 20px; color: var(--color-indigo);">
+                    <h3 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin-bottom: 20px; color: var(--text-main);">
                         Récapitulatif de Commande
                     </h3>
 
@@ -86,8 +86,8 @@
                         <span th:text="${cart.formattedShippingFee}">GRATUIT</span>
                     </div>
 
-                    <div th:if="${cart.subtotal < 300}" style="font-size: 0.8rem; color: var(--color-primary-dark); background: rgba(217, 119, 6, 0.1); padding: 8px 12px; border-radius: var(--radius-sm); margin: 10px 0;">
-                        💡 Ajoutez encore <strong th:text="${300.0 - cart.subtotal} + ' DH'"></strong> pour bénéficier de la livraison gratuite !
+                    <div th:if="${cart.subtotal < 300}" style="font-size: 0.82rem; color: #B45309; background: rgba(255, 149, 0, 0.1); padding: 10px 14px; border-radius: var(--radius-sm); margin: 12px 0; border: 1px solid rgba(255, 149, 0, 0.2);">
+                        Ajoutez encore <strong th:text="${300.0 - cart.subtotal} + ' DH'"></strong> pour bénéficier de la livraison gratuite
                     </div>
 
                     <div class="summary-row total">
@@ -97,23 +97,23 @@
 
                     <!-- Checkout CTA Button -->
                     <div style="margin-top: 24px;">
-                        <a th:href="@{/checkout}" class="btn btn-primary btn-block" style="padding: 14px 24px; font-size: 1rem;">
-                            Procéder au Paiement →
+                        <a th:href="@{/checkout}" class="btn btn-primary btn-block" style="padding: 14px 24px; font-size: 0.98rem;">
+                            Procéder au Paiement
                         </a>
                     </div>
 
                     <div style="margin-top: 20px; text-align: center; font-size: 0.8rem; color: var(--text-muted);">
-                        🔒 Transaction 100% sécurisée via CMI
+                        Paiement sécurisé CMI • Chiffrement SSL 256 bits
                     </div>
                 </div>
 
             </div>
 
-            <!-- Empty Cart State -->
-            <div th:if="${cart.empty}" style="text-align: center; padding: 80px 20px; background: white; border-radius: var(--radius-lg); border: 1px solid var(--border-light);">
-                <div style="font-size: 4rem; margin-bottom: 16px;">🛒</div>
-                <h2 style="font-family: var(--font-serif); margin-bottom: 8px;">Votre panier est actuellement vide</h2>
-                <p style="color: var(--text-muted); margin-bottom: 28px;">Découvrez nos trésors artisanaux et commencez vos achats dès maintenant.</p>
+            <!-- Empty Cart State (Liquid Glass) -->
+            <div th:if="${cart.empty}" class="cart-empty-card">
+                <div class="cart-empty-mark">0</div>
+                <h2 style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; margin-bottom: 8px;">Votre panier est vide</h2>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 28px;">Explorez nos pièces d'exception et commencez votre sélection.</p>
                 <a th:href="@{/produits}" class="btn btn-primary">Découvrir les produits</a>
             </div>
 
