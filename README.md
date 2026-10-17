@@ -281,7 +281,7 @@ Chaque dossier a son propre `README.md` (technologies, commandes, résultats).
 |---|---|---|---|
 | 1 | **Mohamed Azil** | Site web, mode panne | [`site/`](site) |
 | 2 | **Ali Nouar** | Infra Kafka, JMeter, intégration | [`infra/`](infra) |
-| 3 | **Bilal Jellaoui** *(chef d'équipe)* | Moteur A (Kafka Streams), Parser | [`engine-a/`](engine-a), [`common/`](common) |
+| 3 | **Bilal Jellaoui** *(C)* | Moteur A (Kafka Streams), Parser | [`engine-a/`](engine-a), [`common/`](common) |
 | 4 | **Ayoub Echihami** | Moteur B (concurrence manuelle) | [`engine-b/`](engine-b) |
 | 5 | **Youssef Benayad** | Collecteur, affichage, alerte | [`collector-display/`](collector-display) |
 | 6 | **Souhail El Bettachi** | Vérification A contre B, benchmark JMeter | [`verification-benchmark/`](verification-benchmark) |
