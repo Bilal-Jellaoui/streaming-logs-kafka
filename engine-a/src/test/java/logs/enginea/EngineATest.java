@@ -31,16 +31,16 @@ class EngineATest {
 
     private static String ligne(String url, int status, int seconde) {
         return "127.0.0.1 - - [07/Oct/2026:14:32:0" + seconde + " +0000] \"GET " + url
-             + " HTTP/1.1\" " + status + " 10";
+                + " HTTP/1.1\" " + status + " 10";
     }
 
     @Test
     void compteLesRequetesEtLesErreurs5xx() {
         try (TopologyTestDriver driver = new TopologyTestDriver(EngineA.buildTopology(), props())) {
             TestInputTopic<String, String> in =
-                driver.createInputTopic("web-logs", new StringSerializer(), new StringSerializer());
+                    driver.createInputTopic("web-logs", new StringSerializer(), new StringSerializer());
             TestOutputTopic<String, String> out =
-                driver.createOutputTopic("stats-a", new StringDeserializer(), new StringDeserializer());
+                    driver.createOutputTopic("stats-a", new StringDeserializer(), new StringDeserializer());
 
             in.pipeInput(null, ligne("/checkout", 200, 5), Instant.parse("2026-10-07T14:32:05Z"));
             in.pipeInput(null, ligne("/checkout", 503, 7), Instant.parse("2026-10-07T14:32:07Z"));
@@ -57,9 +57,9 @@ class EngineATest {
     void lesUrlDeProduitsSontRegroupees() {
         try (TopologyTestDriver driver = new TopologyTestDriver(EngineA.buildTopology(), props())) {
             TestInputTopic<String, String> in =
-                driver.createInputTopic("web-logs", new StringSerializer(), new StringSerializer());
+                    driver.createInputTopic("web-logs", new StringSerializer(), new StringSerializer());
             TestOutputTopic<String, String> out =
-                driver.createOutputTopic("stats-a", new StringDeserializer(), new StringDeserializer());
+                    driver.createOutputTopic("stats-a", new StringDeserializer(), new StringDeserializer());
 
             in.pipeInput(null, ligne("/produits/12", 200, 5), Instant.parse("2026-10-07T14:32:05Z"));
             in.pipeInput(null, ligne("/produits/13?x=1", 200, 6), Instant.parse("2026-10-07T14:32:06Z"));
@@ -75,13 +75,52 @@ class EngineATest {
     void uneLigneMalFormeeEstIgnoree() {
         try (TopologyTestDriver driver = new TopologyTestDriver(EngineA.buildTopology(), props())) {
             TestInputTopic<String, String> in =
-                driver.createInputTopic("web-logs", new StringSerializer(), new StringSerializer());
+                    driver.createInputTopic("web-logs", new StringSerializer(), new StringSerializer());
             TestOutputTopic<String, String> out =
-                driver.createOutputTopic("stats-a", new StringDeserializer(), new StringDeserializer());
+                    driver.createOutputTopic("stats-a", new StringDeserializer(), new StringDeserializer());
 
             in.pipeInput(null, "n'importe quoi", Instant.parse("2026-10-07T14:32:05Z"));
 
             assertTrue(out.isEmpty());
+        }
+    }
+
+    @Test
+    void laFenetreVientDeLHeureDuLogPasDeLHeureDEnvoi() {
+        try (TopologyTestDriver driver = new TopologyTestDriver(EngineA.buildTopology(), props())) {
+            TestInputTopic<String, String> in =
+                    driver.createInputTopic("web-logs", new StringSerializer(), new StringSerializer());
+            TestOutputTopic<String, String> out =
+                    driver.createOutputTopic("stats-a", new StringDeserializer(), new StringDeserializer());
+
+            // Le log dit 14:32:05, mais le message est "envoyé" à 20:00:00 : la fenêtre doit suivre le log.
+            in.pipeInput(null, ligne("/checkout", 200, 5), Instant.parse("2026-10-07T20:00:00Z"));
+
+            List<KeyValue<String, String>> res = out.readKeyValuesToList();
+            long attendu = Instant.parse("2026-10-07T14:32:05Z").toEpochMilli();
+            assertTrue(res.get(res.size() - 1).value.contains("\"windowStart\":" + attendu));
+        }
+    }
+
+    @Test
+    void deuxHeuresDeLogDifferentesDonnentDeuxFenetresMemeSiEnvoyeesEnsemble() {
+        try (TopologyTestDriver driver = new TopologyTestDriver(EngineA.buildTopology(), props())) {
+            TestInputTopic<String, String> in =
+                    driver.createInputTopic("web-logs", new StringSerializer(), new StringSerializer());
+            TestOutputTopic<String, String> out =
+                    driver.createOutputTopic("stats-a", new StringDeserializer(), new StringDeserializer());
+
+            // Même heure d'envoi, mais 14:32:01 (fenêtre :00) et 14:32:07 (fenêtre :05).
+            Instant envoi = Instant.parse("2026-10-07T20:00:00Z");
+            in.pipeInput(null, ligne("/checkout", 200, 1), envoi);
+            in.pipeInput(null, ligne("/checkout", 200, 7), envoi);
+
+            List<KeyValue<String, String>> res = out.readKeyValuesToList();
+            long f0 = Instant.parse("2026-10-07T14:32:00Z").toEpochMilli();
+            long f5 = Instant.parse("2026-10-07T14:32:05Z").toEpochMilli();
+            assertTrue(res.stream().anyMatch(kv -> kv.value.contains("\"windowStart\":" + f0)));
+            assertTrue(res.stream().anyMatch(kv -> kv.value.contains("\"windowStart\":" + f5)));
+            assertEquals(2, res.size());
         }
     }
 }

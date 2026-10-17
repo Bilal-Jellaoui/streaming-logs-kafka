@@ -4,6 +4,8 @@
 
 Compte les requêtes et les erreurs 5xx par URL et par fenêtre de 5 s, en lisant `web-logs` et en publiant dans `stats-a`.
 
+**Base de temps :** les fenêtres suivent l'heure écrite dans la ligne de log (pas l'heure d'envoi dans Kafka), comme dans le Moteur B.
+
 Topologie : `web-logs` → parsing (`common`) → `selectKey(url)` → `groupByKey` → fenêtres de 5 s → `aggregate` (requêtes + erreurs 5xx) → JSON dans `stats-a`.
 
 Format JSON commun avec le Moteur B : `{"engine":"A","windowStart":<ms>,"url":"/checkout","requests":2,"errors5xx":2}`.
@@ -71,5 +73,6 @@ Test d'intégration avec `exemple-logs.txt` (fenêtre de 5 s), identique sur Kaf
 | `Failed to load class StaticLoggerBinder` (logs muets) | `slf4j-simple` 2.0.x (géré par le parent) avec `slf4j-api` 1.7.x tiré par Kafka | Version explicite `slf4j-simple` **1.7.36** dans `engine-a/pom.xml` |
 | Les vrais logs Tomcat produisaient des URL différentes à chaque session | Paramètre de session `;SOUKLINE_SESSION=...` dans le chemin | `LogParser.normalize` retire tout ce qui suit `;` (test ajouté) |
 | Pas de résultat au démarrage | Le Streams passe par `REBALANCING` avant `RUNNING` | Attendre `REBALANCING -> RUNNING` dans la console avant d'envoyer des lignes |
+| Moteur A et Moteur B pas dans les mêmes fenêtres de 5 s | Moteur A utilisait l'heure d'**envoi** du message dans Kafka, le Moteur B l'heure écrite dans le **log** | `LogTimeExtractor` : le Moteur A lit lui aussi l'heure du log avec `LogParser` (2 tests ajoutés) |
 | Une URL apparaît plusieurs fois dans `stats-a` (ex. `requests:1` puis `2`) | Chaque nouvelle requête republie le total de la fenêtre | Comportement voulu : le dernier message fait foi (l'affichage garde le dernier par moteur, fenêtre, url) |
-`docker stop soukline-kafka-2`), logs renvoyés : Moteur A continue et produit les mêmes résultats dans `stats-a`. Après redémarrage du broker, tous les ISR reviennent à 3.
+`docker stop soukline-kafka-2`), logs renvoyés : Moteur A continue et produit les mêmes résultats dans `stats-a`. Après redémarrage du broker, tous les ISR reviennent à 3.ukline-kafka-2`), logs renvoyés : Moteur A continue et produit les mêmes résultats dans `stats-a`. Après redémarrage du broker, tous les ISR reviennent à 3.
