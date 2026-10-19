@@ -12,11 +12,41 @@
 
   <artifactId>verification-benchmark</artifactId>
 
-  <!-- Pas de <version> ici : elles viennent du pom parent. Ajoute tes dépendances ci-dessous. -->
+  <!-- Pas de <version> ici : elles viennent du pom parent. -->
   <dependencies>
     <dependency><groupId>logs</groupId><artifactId>common</artifactId></dependency>
     <dependency><groupId>org.apache.kafka</groupId><artifactId>kafka-clients</artifactId></dependency>
     <dependency><groupId>org.slf4j</groupId><artifactId>slf4j-simple</artifactId></dependency>
     <dependency><groupId>org.junit.jupiter</groupId><artifactId>junit-jupiter</artifactId><scope>test</scope></dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <!--
+        Lancement des outils (apres "mvn -q -DskipTests install" a la racine).
+        Les exemples complets sont dans le README de ce module et dans scripts/run-verification.ps1.
+        Identifiants disponibles : exec:java@verify, exec:java@baseline, exec:java@benchmark.
+        Sous PowerShell, garder les guillemets autour de l'argument Dexec.args.
+      -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.2.0</version>
+        <executions>
+          <execution>
+            <id>verify</id>
+            <configuration><mainClass>logs.benchmark.StatsVerifier</mainClass></configuration>
+          </execution>
+          <execution>
+            <id>baseline</id>
+            <configuration><mainClass>logs.benchmark.SequentialBaseline</mainClass></configuration>
+          </execution>
+          <execution>
+            <id>benchmark</id>
+            <configuration><mainClass>logs.benchmark.BenchmarkRunner</mainClass></configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
